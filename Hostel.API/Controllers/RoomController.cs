@@ -32,9 +32,6 @@ namespace Hostel.API.Controllers
 
             return mapperRoom = new MapperConfiguration(cfg =>
                 cfg.CreateMap<RoomDTO, RoomModel>()
-                 .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                 .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                 .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))
                  .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
                 ).CreateMapper();
         }
@@ -45,9 +42,6 @@ namespace Hostel.API.Controllers
 
             return mapperRoomReverse = new MapperConfiguration(cfg =>
                cfg.CreateMap<RoomModel, RoomDTO>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))
                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
                ).CreateMapper();
         }

@@ -29,10 +29,6 @@ namespace Hotel.BLL.Services
 
             return mapperPriceCategory = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategory, PriceCategoryDTO>()
-              .ForMember(d => d.Price, o => o.MapFrom(s => s.Price))
-              .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-              .ForMember(d => d.StartDate, o => o.MapFrom(s => s.StartDate))
-              .ForMember(d => d.EndDate, o => o.MapFrom(s => s.EndDate))
               .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<Category, CategoryDTO>(s.Category)))
               ).CreateMapper();
         }
@@ -43,10 +39,6 @@ namespace Hotel.BLL.Services
 
             return mapperPriceCategoryReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryDTO, PriceCategory>()
-              .ForMember(d => d.Price, o => o.MapFrom(s => s.Price))
-              .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-              .ForMember(d => d.StartDate, o => o.MapFrom(s => s.StartDate))
-              .ForMember(d => d.EndDate, o => o.MapFrom(s => s.EndDate))
               .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryDTO, Category>(s.Category)))
               ).CreateMapper();
         }

@@ -15,19 +15,22 @@ namespace Hostel.API.Controllers
     public class CategoryController : ApiController
     {
         private ICategoryService service;
+        private IMapper mapperCategory;
+        private IMapper mapperCategoryReverse;
 
         public CategoryController(ICategoryService service)
         {
             this.service = service;
+            mapperCategory = new MapperConfiguration(cfg =>
+               cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
+            mapperCategoryReverse = new MapperConfiguration(cfg =>
+              cfg.CreateMap<CategoryModel, CategoryDTO>()).CreateMapper();
         }
 
         public IEnumerable<CategoryModel> Get()
         {
-            var mapper = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
-
             var data = service.GetAll();
-            var categories = mapper.Map<IEnumerable<CategoryDTO>, List<CategoryModel>>(data);
+            var categories = mapperCategory.Map<IEnumerable<CategoryDTO>, List<CategoryModel>>(data);
             return categories;
         }
 
@@ -35,9 +38,6 @@ namespace Hostel.API.Controllers
         [ResponseType(typeof(CategoryModel))]
         public HttpResponseMessage Get(HttpRequestMessage request, int id)
         {
-            var mapper = new MapperConfiguration(cfg =>
-              cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
-
             CategoryDTO data = service.Get(id);
 
             if (data == null)
@@ -45,17 +45,14 @@ namespace Hostel.API.Controllers
                 return request.CreateResponse(HttpStatusCode.NotFound);
             }
 
-            var category = mapper.Map<CategoryDTO, CategoryModel>(data);
+            var category = mapperCategory.Map<CategoryDTO, CategoryModel>(data);
             return request.CreateResponse(HttpStatusCode.OK, category);
         }
 
 
         public void Post([FromBody] CategoryModel value)
         {
-            var mapper = new MapperConfiguration(cfg =>
-              cfg.CreateMap<CategoryModel, CategoryDTO>()).CreateMapper();
-
-            service.Create(mapper.Map<CategoryModel, CategoryDTO>(value));
+            service.Create(mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(value));
         }
 
         public void Delete(int id)

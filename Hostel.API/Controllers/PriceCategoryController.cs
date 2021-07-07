@@ -33,10 +33,6 @@ namespace Hostel.API.Controllers
 
             return mapperPriceCategory = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryDTO, PriceCategoryModel>()
-              .ForMember(d => d.Price, o => o.MapFrom(s => s.Price))
-              .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-              .ForMember(d => d.StartDate, o => o.MapFrom(s => s.StartDate))
-              .ForMember(d => d.EndDate, o => o.MapFrom(s => s.EndDate))
               .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
               ).CreateMapper();
         }
@@ -47,10 +43,6 @@ namespace Hostel.API.Controllers
 
             return mapperPriceCategoryReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryModel, PriceCategoryDTO>()
-              .ForMember(d => d.Price, o => o.MapFrom(s => s.Price))
-              .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-              .ForMember(d => d.StartDate, o => o.MapFrom(s => s.StartDate))
-              .ForMember(d => d.EndDate, o => o.MapFrom(s => s.EndDate))
               .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
               ).CreateMapper();
         }

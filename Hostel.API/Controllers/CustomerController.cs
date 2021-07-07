@@ -15,19 +15,22 @@ namespace Hostel.API.Controllers
     public class CustomerController : ApiController
     {
         private ICustomerService service;
+        private IMapper mapperCustomer;
+        private IMapper mapperCustomerReverse;
 
         public CustomerController(ICustomerService service)
         {
             this.service = service;
+            mapperCustomer = new MapperConfiguration(cfg =>
+               cfg.CreateMap<CustomerDTO, CustomerModel>()).CreateMapper();
+            mapperCustomerReverse = new MapperConfiguration(cfg =>
+              cfg.CreateMap<CustomerModel, CustomerDTO>()).CreateMapper();
         }
        
         public IEnumerable<CustomerModel> Get()
         {
-            var mapper = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CustomerDTO, CustomerModel>()).CreateMapper();
-
             var data = service.GetAll();
-            var customers = mapper.Map<IEnumerable<CustomerDTO>, List<CustomerModel>>(data);
+            var customers = mapperCustomer.Map<IEnumerable<CustomerDTO>, List<CustomerModel>>(data);
             return customers;
         }
 
@@ -35,10 +38,6 @@ namespace Hostel.API.Controllers
         [ResponseType(typeof(CustomerModel))]
         public HttpResponseMessage Get(HttpRequestMessage request, int id)
         {
-             var mapper = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CustomerDTO, CustomerModel>()).CreateMapper();
-           
-
             CustomerDTO data = service.Get(id);
 
             if (data == null)
@@ -46,17 +45,14 @@ namespace Hostel.API.Controllers
                 return request.CreateResponse(HttpStatusCode.NotFound);
             }
 
-            var customer = mapper.Map<CustomerDTO, CustomerModel>(data);
+            var customer = mapperCustomer.Map<CustomerDTO, CustomerModel>(data);
             return request.CreateResponse(HttpStatusCode.OK, customer);
         }
 
      
         public void Post([FromBody] CustomerModel value)
         {
-            var mapper = new MapperConfiguration(cfg =>
-              cfg.CreateMap<CustomerModel, CustomerDTO>()).CreateMapper();
-
-            service.Create(mapper.Map<CustomerModel, CustomerDTO>(value));
+            service.Create(mapperCustomerReverse.Map<CustomerModel, CustomerDTO>(value));
         }
 
        

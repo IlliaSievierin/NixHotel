@@ -32,9 +32,6 @@ namespace Hotel.BLL.Services
 
             return mapperRoom = new MapperConfiguration(cfg =>
                cfg.CreateMap<Room, RoomDTO>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))
                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<Category, CategoryDTO>(s.Category)))
                ).CreateMapper();
         }
@@ -45,9 +42,6 @@ namespace Hotel.BLL.Services
 
             return mapperRoomReverse = new MapperConfiguration(cfg =>
                cfg.CreateMap<RoomDTO, Room>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))
                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryDTO, Category>(s.Category)))
                ).CreateMapper();
         }
@@ -63,8 +57,13 @@ namespace Hotel.BLL.Services
         }
         public IEnumerable<RoomDTO> GetFreeRooms(DateTime dateCheck)
         {
-            var occupiedRooms = Database.Reservations.GetAll().Where(res=> dateCheck >= res.ArrivalDate && dateCheck <= res.DepartureDate).Select(r=>r.RoomId);
-            var freeRooms = Database.Rooms.GetAll().Where(r => !occupiedRooms.Contains(r.Id));
+            var occupiedRooms = Database.Reservations.GetAll()
+                .Where(res=> dateCheck >= res.ArrivalDate && dateCheck <= res.DepartureDate)
+                .Select(r=>r.RoomId);
+
+            var freeRooms = Database.Rooms.GetAll()
+                .Where(r => !occupiedRooms.Contains(r.Id));
+
             return mapperRoom.Map<IEnumerable<Room>, List<RoomDTO>>(freeRooms);
         }
 

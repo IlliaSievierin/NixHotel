@@ -14,34 +14,32 @@ namespace Hotel.BLL.Services
     public class CustomerService : ICustomerService
     {
         private IWorkUnit Database { get; set; }
+        private IMapper mapperCustomer;
+        private IMapper mapperCustomerReverse;
 
         public CustomerService(IWorkUnit database)
         {
             Database = database;
+            mapperCustomer = new MapperConfiguration(cfg =>
+               cfg.CreateMap<Customer, CustomerDTO>()).CreateMapper();
+            mapperCustomerReverse = new MapperConfiguration(cfg =>
+             cfg.CreateMap<CustomerDTO, Customer>()).CreateMapper();
+
         }
 
         public IEnumerable<CustomerDTO> GetAll()
         {
-            var mapper = new MapperConfiguration(cfg => 
-               cfg.CreateMap<Customer, CustomerDTO>()).CreateMapper();
-
-            return mapper.Map<IEnumerable<Customer>, List<CustomerDTO>>(Database.Customers.GetAll());
+            return mapperCustomer.Map<IEnumerable<Customer>, List<CustomerDTO>>(Database.Customers.GetAll());
         }
 
         public CustomerDTO Get(int id)
         {
-            var mapper = new MapperConfiguration(cfg =>
-              cfg.CreateMap<Customer, CustomerDTO>()).CreateMapper();
-
-            return mapper.Map<Customer, CustomerDTO>(Database.Customers.Get(id));
+            return mapperCustomer.Map<Customer, CustomerDTO>(Database.Customers.Get(id));
         }
 
         public void Create(CustomerDTO item)
         {
-            var mapper = new MapperConfiguration(cfg =>
-              cfg.CreateMap<CustomerDTO, Customer>()).CreateMapper();
-
-            Database.Customers.Create(mapper.Map<CustomerDTO, Customer>(item));
+            Database.Customers.Create(mapperCustomerReverse.Map<CustomerDTO, Customer>(item));
             Database.Save();
         }
 

@@ -35,19 +35,11 @@ namespace Hostel.API.Controllers
 
             var mapperRoom = new MapperConfiguration(cfg =>
                 cfg.CreateMap<RoomDTO, RoomModel>()
-                 .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                 .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                 .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))
                  .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
                 ).CreateMapper();
 
             return mapperReservation = new MapperConfiguration(cfg =>
               cfg.CreateMap<ReservationDTO, ReservationModel>()
-              .ForMember(d => d.ReservationDate, o => o.MapFrom(s => s.ReservationDate))
-              .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-              .ForMember(d => d.ArrivalDate, o => o.MapFrom(s => s.ArrivalDate))
-              .ForMember(d => d.CheckIn, o => o.MapFrom(s => s.CheckIn))
-              .ForMember(d => d.DepartureDate, o => o.MapFrom(s => s.DepartureDate))
               .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomer.Map<CustomerDTO, CustomerModel>(s.Customer)))
               .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoom.Map<RoomDTO, RoomModel>(s.Room)))
               ).CreateMapper();
