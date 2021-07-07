@@ -14,6 +14,7 @@ namespace Hotel.BLL.Interfaces
         void Create(ReservationDTO item);
         void Delete(int id);
 
+        void Update(ReservationDTO newReservation, int id);
         decimal GetProfitForMonth(DateTime date);
     }
 }

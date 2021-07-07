@@ -32,21 +32,13 @@ namespace Hotel.BLL.Services
 
             var mapperRoom = new MapperConfiguration(cfg =>
                cfg.CreateMap<Room, RoomDTO>()
-                /*.ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))*/
                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<Category, CategoryDTO>(s.Category)))
                ).CreateMapper();
 
             return mapperReservation = new MapperConfiguration(cfg =>
               cfg.CreateMap<Reservation, ReservationDTO>()
-              //.ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
               .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomer.Map<Customer, CustomerDTO>(s.Customer)))
               .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoom.Map<Room, RoomDTO>(s.Room)))
-              /*.ForMember(d => d.ReservationDate, o => o.MapFrom(s => s.ReservationDate))
-              .ForMember(d => d.ArrivalDate, o => o.MapFrom(s => s.ArrivalDate))
-              .ForMember(d => d.DepartureDate, o => o.MapFrom(s => s.DepartureDate))
-              .ForMember(d => d.CheckIn, o => o.MapFrom(s => s.CheckIn))*/
               ).CreateMapper();
         }
         private IMapper InitMapperReverse()
@@ -108,6 +100,12 @@ namespace Hotel.BLL.Services
                 Database.Reservations.Delete(id);
                 Database.Save();
             }
+        }
+
+        public void Update(ReservationDTO newReservation, int id)
+        {
+            Database.Reservations.Update(mapperReservationReverse.Map<ReservationDTO, Reservation>(newReservation), id);
+            Database.Save();
         }
     }
 }

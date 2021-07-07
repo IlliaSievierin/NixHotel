@@ -3,6 +3,7 @@ using Hotel.DAL.Entities;
 using Hotel.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,22 @@ namespace Hotel.DAL.Repositories
             Customer customer = Get(id);
             if (customer != null)
                 db.Customers.Remove(customer);
+        }
+
+        public void Update(Customer newItem, int id)
+        {
+            Customer customer = Get(id);
+            if (customer != null)
+            {
+                customer.Id = newItem.Id;
+                customer.FirstName = newItem.FirstName;
+                customer.MiddleName = newItem.MiddleName;
+                customer.LastName = newItem.LastName;
+                customer.DateOfBirth = newItem.DateOfBirth;
+                customer.Passport = newItem.Passport;
+
+                db.Entry(customer).State = EntityState.Modified;
+            }
         }
     }
 }

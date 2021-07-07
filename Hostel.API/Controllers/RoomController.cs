@@ -82,7 +82,10 @@ namespace Hostel.API.Controllers
         {
             service.Create(mapperRoomReverse.Map<RoomModel, RoomDTO>(value));
         }
-
+        public void Put(int id, [FromBody] RoomModel newRoom)
+        {
+            service.Update(mapperRoomReverse.Map<RoomModel, RoomDTO>(newRoom), id);
+        }
         public void Delete(int id)
         {
             service.Delete(id);

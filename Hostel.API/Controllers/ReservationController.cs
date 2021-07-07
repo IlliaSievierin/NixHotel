@@ -54,21 +54,13 @@ namespace Hostel.API.Controllers
 
             var mapperRoomReverse = new MapperConfiguration(cfg =>
                cfg.CreateMap<RoomModel, RoomDTO>()
-                .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
-                .ForMember(d => d.RoomNumber, o => o.MapFrom(s => s.RoomNumber))
-                .ForMember(d => d.Active, o => o.MapFrom(s => s.Active))
                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
                ).CreateMapper();
 
             return mapperReservationReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<ReservationModel, ReservationDTO>()
-              .ForMember(d => d.Id, o => o.MapFrom(s => s.Id))
               .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomerReverse.Map<CustomerModel, CustomerDTO>(s.Customer)))
               .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoomReverse.Map<RoomModel, RoomDTO>(s.Room)))
-              .ForMember(d => d.ReservationDate, o => o.MapFrom(s => s.ReservationDate))
-              .ForMember(d => d.ArrivalDate, o => o.MapFrom(s => s.ArrivalDate))
-              .ForMember(d => d.DepartureDate, o => o.MapFrom(s => s.DepartureDate))
-              .ForMember(d => d.CheckIn, o => o.MapFrom(s => s.CheckIn))
               ).CreateMapper();
         }
         public IEnumerable<ReservationModel> Get()
@@ -107,7 +99,10 @@ namespace Hostel.API.Controllers
             service.Create(mapperReservationReverse.Map< ReservationModel, ReservationDTO>(value));
         }
 
-
+        public void Put(int id, [FromBody] ReservationModel newReservation)
+        {
+            service.Update(mapperReservationReverse.Map<ReservationModel, ReservationDTO>(newReservation), id);
+        }
 
         public void Delete(int id)
         {

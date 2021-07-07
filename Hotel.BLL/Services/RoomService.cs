@@ -82,5 +82,11 @@ namespace Hotel.BLL.Services
                 Database.Save();
             }
         }
+
+        public void Update(RoomDTO newRoom, int id)
+        {
+            Database.Rooms.Update(mapperRoomReverse.Map<RoomDTO, Room>(newRoom), id);
+            Database.Save();
+        }
     }
 }

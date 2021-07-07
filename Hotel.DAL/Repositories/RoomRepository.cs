@@ -3,6 +3,7 @@ using Hotel.DAL.Entities;
 using Hotel.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,18 @@ namespace Hotel.DAL.Repositories
             Room room = Get(id);
             if (room != null)
                 db.Rooms.Remove(room);
+        }
+
+        public void Update(Room newRoom,int id)
+        {
+            Room room = Get(id);
+            if (room != null)
+            {
+                room.Id = newRoom.Id;
+                room.CategoryId = newRoom.CategoryId;
+                room.Active = newRoom.Active;
+                db.Entry(room).State = EntityState.Modified;
+            }
         }
     }
 }
