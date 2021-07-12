@@ -34,7 +34,14 @@ namespace Hostel.API.Controllers
             return customers;
         }
 
-  
+        [Route("api/GetAllCount")]
+        public int GetAllCount()
+        {
+            var count = Get().Count();
+
+            return count;
+        }
+
         [ResponseType(typeof(CustomerModel))]
         public HttpResponseMessage Get(HttpRequestMessage request, int id)
         {
@@ -49,17 +56,16 @@ namespace Hostel.API.Controllers
             return request.CreateResponse(HttpStatusCode.OK, customer);
         }
 
-     
-        public void Post([FromBody] CustomerModel value)
+        public HttpResponseMessage Post(HttpRequestMessage request, [FromBody] CustomerModel value)
         {
             service.Create(mapperCustomerReverse.Map<CustomerModel, CustomerDTO>(value));
+            return request.CreateResponse(HttpStatusCode.OK);
         }
 
-       
-
-        public void Delete(int id)
+        public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
             service.Delete(id);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }

@@ -15,5 +15,6 @@ namespace Hotel.BLL.DTO
         public DateTime DateOfBirth { get; set; }
         public string Passport { get; set; }
 
+        
     }
 }

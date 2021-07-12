@@ -52,7 +52,6 @@ namespace Hostel.API.Controllers
             return rooms;
         }
 
-
         [ResponseType(typeof(RoomModel))]
         public HttpResponseMessage Get(HttpRequestMessage request, int id)
         {
@@ -78,17 +77,20 @@ namespace Hostel.API.Controllers
             }
             return request.CreateResponse(HttpStatusCode.OK, mapperRoom.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(rooms));
         }
-        public void Post([FromBody] RoomModel value)
+        public HttpResponseMessage Post(HttpRequestMessage request, [FromBody] RoomModel value)
         {
             service.Create(mapperRoomReverse.Map<RoomModel, RoomDTO>(value));
+            return request.CreateResponse(HttpStatusCode.OK);
         }
-        public void Put(int id, [FromBody] RoomModel newRoom)
+        public HttpResponseMessage Put(HttpRequestMessage request, int id, [FromBody] RoomModel newRoom)
         {
             service.Update(mapperRoomReverse.Map<RoomModel, RoomDTO>(newRoom), id);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
-        public void Delete(int id)
+        public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
             service.Delete(id);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }

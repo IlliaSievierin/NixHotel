@@ -20,5 +20,21 @@ namespace Hostel.API.Models
         public DateTime DepartureDate { get; set; }
 
         public bool CheckIn { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if(obj is ReservationModel)
+            {
+                var objRM = obj as ReservationModel;
+
+                return this.ReservationDate == objRM.ReservationDate
+                    && this.ArrivalDate == objRM.ArrivalDate
+                    && this.DepartureDate == objRM.DepartureDate
+                    && this.CheckIn == objRM.CheckIn
+                    && this.Customer == objRM.Customer
+                    && this.Room == objRM.Room;
+            }
+            else return base.Equals(obj);
+        }
     }
 }

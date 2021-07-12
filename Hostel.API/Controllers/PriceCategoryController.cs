@@ -70,14 +70,16 @@ namespace Hostel.API.Controllers
         }
 
 
-        public void Post([FromBody] PriceCategoryModel value)
+        public HttpResponseMessage Post(HttpRequestMessage request, [FromBody] PriceCategoryModel value)
         {
             service.Create(mapperPriceCategoryReverse.Map<PriceCategoryModel, PriceCategoryDTO>(value));
+            return request.CreateResponse(HttpStatusCode.OK);
         }
 
-        public void Delete(int id)
+        public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
             service.Delete(id);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }

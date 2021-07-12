@@ -93,20 +93,24 @@ namespace Hostel.API.Controllers
            
             return profit;
         }
+        
 
-        public void Post([FromBody] ReservationModel value)
+        public HttpResponseMessage Post(HttpRequestMessage request, [FromBody] ReservationModel value)
         {
             service.Create(mapperReservationReverse.Map< ReservationModel, ReservationDTO>(value));
+            return request.CreateResponse(HttpStatusCode.OK);
         }
 
-        public void Put(int id, [FromBody] ReservationModel newReservation)
+        public HttpResponseMessage Put(HttpRequestMessage request, int id, [FromBody] ReservationModel newReservation)
         {
             service.Update(mapperReservationReverse.Map<ReservationModel, ReservationDTO>(newReservation), id);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
 
-        public void Delete(int id)
+        public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
             service.Delete(id);
+            return request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }

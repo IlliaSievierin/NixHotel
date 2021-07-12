@@ -176,7 +176,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
-    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\PriceCategoryController.cs" />
     <Compile Include="Controllers\ReservationController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
