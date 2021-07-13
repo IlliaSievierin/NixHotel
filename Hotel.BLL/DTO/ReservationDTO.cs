@@ -21,6 +21,21 @@ namespace Hotel.BLL.DTO
         public DateTime DepartureDate { get; set; }
 
         public bool CheckIn { get; set; }
+        public override bool Equals(object obj)
+        {
+            if (obj is ReservationDTO)
+            {
+                var objRM = obj as ReservationDTO;
+
+                return this.ReservationDate == objRM.ReservationDate
+                    && this.ArrivalDate == objRM.ArrivalDate
+                    && this.DepartureDate == objRM.DepartureDate
+                    && this.CheckIn == objRM.CheckIn
+                    && this.Customer == objRM.Customer
+                    && this.Room == objRM.Room;
+            }
+            else return base.Equals(obj);
+        }
 
     }
 }

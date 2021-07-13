@@ -58,6 +58,11 @@ namespace Hostel.API.Controllers
 
         public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
+            CategoryDTO data = service.Get(id);
+            if (data == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound);
+            }
             service.Delete(id);
             return request.CreateResponse(HttpStatusCode.OK);
         }

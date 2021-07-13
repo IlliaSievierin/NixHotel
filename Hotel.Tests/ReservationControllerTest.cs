@@ -18,6 +18,7 @@ namespace Hotel.Tests
     public class ReservationControllerTest
     {
         private HttpRequestMessage httpRequest;
+        private ReservationDTO reservationDTOTest;
         private IMapper mapper;
 
         public ReservationControllerTest()
@@ -42,10 +43,17 @@ namespace Hotel.Tests
               .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoom.Map<RoomDTO, RoomModel>(s.Room)))
               ).CreateMapper();
 
+            reservationDTOTest = new ReservationDTO()
+            {
+                ArrivalDate = new DateTime(2021, 1, 1),
+                DepartureDate = new DateTime(2021, 2, 2),
+                ReservationDate = new DateTime(2021, 1, 1),
+                CheckIn = true
+            };
         }
 
         [TestMethod]
-        public void ReservationGetAllResultCorrectTest()
+        public void ReservationGetAllCorrectTest()
         {
             var mock = new Mock<IReservationService>();
             mock.Setup(a => a.GetAll()).Returns(new List<ReservationDTO>());
@@ -58,55 +66,83 @@ namespace Hotel.Tests
             Assert.AreEqual(expected.Count(), result.Count());
         }
         [TestMethod]
-        public void ReservationGetTest()
+        public void ReservationGetCorrectTest()
         {
-            var id = 0;
+            var id = 1;
             var mock = new Mock<IReservationService>();
             mock.Setup(a => a.Get(id)).Returns(new ReservationDTO());
 
-            var expected = mapper.Map<ReservationDTO, ReservationModel>(mock.Object.Get(id));
+            var expected = mock.Object.Get(id);
 
             ReservationController controller = new ReservationController(mock.Object);
+            var result = controller.Get(httpRequest, id);
+            var resultContent = result.Content.ReadAsAsync<ReservationDTO>();
 
-            var result = controller.Get(httpRequest, id).Content.ReadAsAsync<ReservationModel>();
-
-            Assert.AreEqual(expected, result.Result);
+            Assert.AreEqual(expected, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
 
         }
+        
         [TestMethod]
-        public void ReservationPostTest()
+        public void ReservationPostCorrectTest()
         {
-            ReservationDTO reservationModel = new ReservationDTO()
-            {
-                ArrivalDate = new DateTime(2021,1,1),
-                DepartureDate  = new DateTime(2021,2,2),
-                ReservationDate = new DateTime(2021,1,1),
-                CheckIn = true
-            };
             var mock = new Mock<IReservationService>();
-            mock.Setup(a => a.Create(reservationModel));
+            mock.Setup(a => a.GetAll()).Returns(new List<ReservationDTO>() { reservationDTOTest });
+            int lastIdReservation = mock.Object.GetAll().Count();
+            mock.Setup(a => a.Get(lastIdReservation)).Returns(reservationDTOTest);
 
             ReservationController controller = new ReservationController(mock.Object);
+            var result = controller.Get(httpRequest, lastIdReservation);
+            var resultContent = result.Content.ReadAsAsync<ReservationDTO>();
 
-            var result = controller.Post(httpRequest, mapper.Map<ReservationDTO, ReservationModel>(reservationModel)).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
-
+            Assert.AreEqual(reservationDTOTest, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
+        
         [TestMethod]
-        public void ReservationDeleteTest()
+        public void ReservationDeleteCorrectTest()
         {
             int id = 1;
             var mock = new Mock<IReservationService>();
-            mock.Setup(a => a.Delete(id));
+            mock.Setup(a => a.Get(id)).Returns(new ReservationDTO());
 
             ReservationController controller = new ReservationController(mock.Object);
+            var resultCode = controller.Delete(httpRequest, id).StatusCode;
+            var deletedReservation = controller.Get(httpRequest, id).Content.ReadAsAsync<RoomDTO>();
 
-            var result = controller.Delete(httpRequest, id).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
-
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
+            Assert.AreNotEqual(reservationDTOTest, deletedReservation);
         }
-      
+
+        [TestMethod]
+        public void ReservationPutCorrectTest()
+        {
+            int id = 1; 
+            var mock = new Mock<IReservationService>();
+            mock.Setup(a => a.Get(id)).Returns(reservationDTOTest);
+            var reservationModelTest = mapper.Map<ReservationDTO, ReservationModel>(reservationDTOTest);
+
+            ReservationController controller = new ReservationController(mock.Object);
+            var resultCode = controller.Put(httpRequest, id, reservationModelTest).StatusCode;
+            var updatedReservation = controller.Get(httpRequest, id).Content.ReadAsAsync<ReservationDTO>();
+
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
+            Assert.AreEqual(reservationDTOTest, updatedReservation.Result);
+        }
+
+        [TestMethod]
+        public void ReservationGetProfitTest()
+        {
+            var testDate = new DateTime(2021, 1, 1);
+            var mock = new Mock<IReservationService>();
+            mock.Setup(a => a.GetProfitForMonth(testDate)).Returns(700m);
+
+            var expected = mock.Object.GetProfitForMonth(testDate);
+
+            ReservationController controller = new ReservationController(mock.Object);
+            var result = controller.GetProfitForMonth(testDate);
+
+            Assert.AreEqual(expected, result);
+        }
     }
 }

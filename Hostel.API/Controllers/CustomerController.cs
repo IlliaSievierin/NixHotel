@@ -35,7 +35,7 @@ namespace Hostel.API.Controllers
         }
 
         [Route("api/GetAllCount")]
-        public int GetAllCount()
+        public long GetAllCount()
         {
             var count = Get().Count();
 
@@ -64,6 +64,11 @@ namespace Hostel.API.Controllers
 
         public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
+            CustomerDTO data = service.Get(id);
+            if (data == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound);
+            }
             service.Delete(id);
             return request.CreateResponse(HttpStatusCode.OK);
         }

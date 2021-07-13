@@ -19,6 +19,7 @@ namespace Hotel.Tests
     public class RoomControllerTest
     {
         private HttpRequestMessage httpRequest;
+        private RoomDTO roomDTOTest;
         private IMapper mapper;
 
         public RoomControllerTest()
@@ -32,6 +33,12 @@ namespace Hotel.Tests
                 cfg.CreateMap<RoomDTO, RoomModel>()
                  .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
                 ).CreateMapper();
+
+            roomDTOTest = new RoomDTO()
+            {
+                Active = true,
+                RoomNumber = "Test",
+            };
 
         }
 
@@ -48,73 +55,87 @@ namespace Hotel.Tests
 
             Assert.AreEqual(expected.Count(), result.Count());
         }
+
         [TestMethod]
-        public void RoomGetTest()
+        public void RoomGetCorrectTest()
         {
             int id = 1;
             var mock = new Mock<IRoomService>();
             mock.Setup(a => a.Get(id)).Returns(new RoomDTO());
 
-            var expected = mapper.Map<RoomDTO, RoomModel>(mock.Object.Get(id));
+            var expected = mock.Object.Get(id);
 
             RoomController controller = new RoomController(mock.Object);
+            var result = controller.Get(httpRequest, id);
+            var resultContent = result.Content.ReadAsAsync<RoomDTO>();
 
-            var result = controller.Get(httpRequest, id).Content.ReadAsAsync<RoomModel>();
-
-            Assert.AreEqual(expected, result.Result);
-
+            Assert.AreEqual(expected, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
+
         [TestMethod]
-        public void RoomPostTest()
+        public void RoomPostCorrectTest()
         {
-            RoomDTO roomModel = new RoomDTO()
-            {
-                Active = true,
-                RoomNumber = "Test",   
-            };
             var mock = new Mock<IRoomService>();
-            mock.Setup(a => a.Create(roomModel));
+            mock.Setup(a => a.GetAll()).Returns(new List<RoomDTO>() { roomDTOTest });
+            int lastIdRoom = mock.Object.GetAll().Count();
+            mock.Setup(a => a.Get(lastIdRoom)).Returns(roomDTOTest);
 
             RoomController controller = new RoomController(mock.Object);
+            var result = controller.Get(httpRequest, lastIdRoom);
+            var resultContent = result.Content.ReadAsAsync<RoomDTO>();
 
-            var result = controller.Post(httpRequest, mapper.Map<RoomDTO, RoomModel>(roomModel)).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
-
+            Assert.AreEqual(roomDTOTest, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
+
         [TestMethod]
-        public void RoomPutTest()
-        {
-            int id = 1;
-            RoomDTO roomModel = new RoomDTO()
-            {
-                Active = true,
-                RoomNumber = "Test",
-            };
-            var mock = new Mock<IRoomService>();
-            mock.Setup(a => a.Update(roomModel,id));
-
-            RoomController controller = new RoomController(mock.Object);
-
-            var result = controller.Put(httpRequest,id, mapper.Map<RoomDTO, RoomModel>(roomModel)).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
-
-        }
-        [TestMethod]
-        public void RoomDeleteTest()
+        public void RoomPutCorrectTest()
         {
             int id = 1;
             var mock = new Mock<IRoomService>();
-            mock.Setup(a => a.Delete(id));
+            mock.Setup(a => a.Get(id)).Returns(roomDTOTest);
+            var roomModelTest = mapper.Map<RoomDTO, RoomModel>(roomDTOTest);
 
             RoomController controller = new RoomController(mock.Object);
+            var resultCode = controller.Put(httpRequest, id, roomModelTest).StatusCode;
+            var updatedRoom = controller.Get(httpRequest, id).Content.ReadAsAsync<RoomDTO>();
 
-            var result = controller.Delete(httpRequest, id).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
-
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
+            Assert.AreEqual(roomDTOTest, updatedRoom.Result);
         }
-       
+
+        [TestMethod]
+        public void RoomDeleteCorrectTest()
+        {
+            int id = 1;
+            var mock = new Mock<IRoomService>();
+            mock.Setup(a => a.Get(id)).Returns(new RoomDTO());
+
+            RoomController controller = new RoomController(mock.Object);
+            var resultCode = controller.Delete(httpRequest, id).StatusCode;
+            var deletedRoom = controller.Get(httpRequest, id).Content.ReadAsAsync<RoomDTO>();
+
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
+            Assert.AreNotEqual(roomDTOTest, deletedRoom);
+        }
+
+        [TestMethod]
+        public void RoomGetFreeRoomsCorrectTest()
+        {
+            var testDate = new DateTime(2021, 1, 1);
+            var mock = new Mock<IRoomService>();
+            mock.Setup(a => a.GetFreeRooms(testDate)).Returns(new List<RoomDTO>() { roomDTOTest});
+
+            var expected = mapper.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(mock.Object.GetFreeRooms(testDate));
+
+            RoomController controller = new RoomController(mock.Object);
+            var result = controller.GetFreeRooms(httpRequest,testDate);
+            var resultContent = result.Content.ReadAsAsync<List<RoomDTO>>();
+
+            Assert.AreEqual(expected.Count(), resultContent.Result.Count());
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
     }
 }

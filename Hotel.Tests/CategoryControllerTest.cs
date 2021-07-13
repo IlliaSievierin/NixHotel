@@ -19,6 +19,7 @@ namespace Hotel.Tests
     public class CategoryControllerTest
     {
         private HttpRequestMessage httpRequest;
+        private CategoryDTO categoryDTOTest;
         private IMapper mapper;
 
         public CategoryControllerTest()
@@ -27,11 +28,16 @@ namespace Hotel.Tests
             httpRequest.Properties[HttpPropertyKeys.HttpConfigurationKey] = new HttpConfiguration();
             mapper = new MapperConfiguration(cfg =>
                cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
+            categoryDTOTest = new CategoryDTO()
+            {
+                CategoryName = "TestName",
+                Bed = 2
+            };
 
         }
 
         [TestMethod]
-        public void CategoryGetAllResultCorrectTest()
+        public void CategoryGetAllCorrectTest()
         {
             var mock = new Mock<ICategoryService>();
             mock.Setup(a => a.GetAll()).Returns(new List<CategoryDTO>());
@@ -44,52 +50,52 @@ namespace Hotel.Tests
             Assert.AreEqual(expected.Count(), result.Count());
         }
         [TestMethod]
-        public void CategoryGetTest()
+        public void CategoryGetCorrectTest()
         {
             int id = 1;
             var mock = new Mock<ICategoryService>();
             mock.Setup(a => a.Get(id)).Returns(new CategoryDTO());
 
-            var expected = mapper.Map<CategoryDTO, CategoryModel>(mock.Object.Get(id));
+            var expected = mock.Object.Get(id);
 
             CategoryController controller = new CategoryController(mock.Object);
+            var result = controller.Get(httpRequest, id);
+            var resultContent = result.Content.ReadAsAsync<CategoryDTO>();
 
-            var result = controller.Get(httpRequest, id).Content.ReadAsAsync<CategoryModel>();
-
-            Assert.AreEqual(expected, result.Result);
-
+            Assert.AreEqual(expected, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
         [TestMethod]
-        public void CategoryPostTest()
+        public void CategoryPostCorrectTest()
         {
-            CategoryDTO categoryModel = new CategoryDTO()
-            {
-               CategoryName = "Test",
-               Bed = 2
-            };
+
             var mock = new Mock<ICategoryService>();
-            mock.Setup(a => a.Create(categoryModel));
+            mock.Setup(a => a.GetAll()).Returns(new List<CategoryDTO>() { categoryDTOTest });
+            int lastIdCategory = mock.Object.GetAll().Count();
+            mock.Setup(a => a.Get(lastIdCategory)).Returns(categoryDTOTest);
 
             CategoryController controller = new CategoryController(mock.Object);
 
-            var result = controller.Post(httpRequest, mapper.Map<CategoryDTO, CategoryModel>(categoryModel)).StatusCode;
+            var result = controller.Get(httpRequest, lastIdCategory);
+            var resultContent = result.Content.ReadAsAsync<CategoryDTO>();
 
-            Assert.AreEqual(HttpStatusCode.OK, result);
+            Assert.AreEqual(categoryDTOTest, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
 
         }
         [TestMethod]
-        public void CategoryDeleteTest()
+        public void CategoryDeleteCorrectTest()
         {
             int id = 1;
             var mock = new Mock<ICategoryService>();
-            mock.Setup(a => a.Delete(id));
+            mock.Setup(a => a.Get(id)).Returns(new CategoryDTO());
 
             CategoryController controller = new CategoryController(mock.Object);
+            var resultCode = controller.Delete(httpRequest, id).StatusCode;
+            var deletedCategory = controller.Get(httpRequest, id).Content.ReadAsAsync<CategoryDTO>();
 
-            var result = controller.Delete(httpRequest, id).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
-
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
+            Assert.AreNotEqual(categoryDTOTest, deletedCategory);
         }
 
     }

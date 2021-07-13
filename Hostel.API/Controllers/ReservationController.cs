@@ -103,12 +103,22 @@ namespace Hostel.API.Controllers
 
         public HttpResponseMessage Put(HttpRequestMessage request, int id, [FromBody] ReservationModel newReservation)
         {
+            ReservationDTO data = service.Get(id);
+            if (data == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound);
+            }
             service.Update(mapperReservationReverse.Map<ReservationModel, ReservationDTO>(newReservation), id);
             return request.CreateResponse(HttpStatusCode.OK);
         }
 
         public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
+            ReservationDTO data = service.Get(id);
+            if (data == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound);
+            }
             service.Delete(id);
             return request.CreateResponse(HttpStatusCode.OK);
         }

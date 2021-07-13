@@ -19,6 +19,7 @@ namespace Hotel.Tests
     public class PriceCategoryTest
     {
         private HttpRequestMessage httpRequest;
+        private PriceCategoryDTO priceCategoryDTOTest;
         private IMapper mapper;
 
         public PriceCategoryTest()
@@ -32,11 +33,17 @@ namespace Hotel.Tests
               cfg.CreateMap<PriceCategoryDTO, PriceCategoryModel>()
               .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
               ).CreateMapper();
+            priceCategoryDTOTest = new PriceCategoryDTO()
+            {
+                Price = 1000,
+                StartDate = new DateTime(2021,1,1),
+                EndDate = new DateTime(2021,2,2)
+            };
 
         }
 
         [TestMethod]
-        public void PriceCategoryGetAllResultCorrectTest()
+        public void PriceCategoryGetAllCorrectTest()
         {
             var mock = new Mock<IPriceCategoryService>();
             mock.Setup(a => a.GetAll()).Returns(new List<PriceCategoryDTO>());
@@ -49,52 +56,50 @@ namespace Hotel.Tests
             Assert.AreEqual(expected.Count(), result.Count());
         }
         [TestMethod]
-        public void PriceCategoryGetTest()
+        public void PriceCategoryGetCorrectTest()
         {
-            var id = 0;
+            var id = 1;
             var mock = new Mock<IPriceCategoryService>();
             mock.Setup(a => a.Get(id)).Returns(new PriceCategoryDTO());
 
-            var expected = mapper.Map<PriceCategoryDTO, PriceCategoryModel>(mock.Object.Get(id));
+            var expected = mock.Object.Get(id);
 
             PriceCategoryController controller = new PriceCategoryController(mock.Object);
+            var result = controller.Get(httpRequest, id);
+            var resultContent = result.Content.ReadAsAsync<PriceCategoryDTO>();
 
-            var result = controller.Get(httpRequest, id).Content.ReadAsAsync<PriceCategoryModel>();
-
-            Assert.AreEqual(expected, result.Result);
-
+            Assert.AreEqual(expected, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
         [TestMethod]
-        public void PriceCategoryPostTest()
+        public void PriceCategoryPostCorrectTest()
         {
-            PriceCategoryDTO priceCategoryModel = new PriceCategoryDTO()
-            {
-               Price = 1000,
-               StartDate = new DateTime(2021,1,1),
-               EndDate = new DateTime(2021,2,2)
-            };
             var mock = new Mock<IPriceCategoryService>();
-            mock.Setup(a => a.Create(priceCategoryModel));
+            mock.Setup(a => a.GetAll()).Returns(new List<PriceCategoryDTO>() { priceCategoryDTOTest });
+            int lastIdPriceCategory = mock.Object.GetAll().Count();
+            mock.Setup(a => a.Get(lastIdPriceCategory)).Returns(priceCategoryDTOTest);
 
             PriceCategoryController controller = new PriceCategoryController(mock.Object);
+            var result = controller.Get(httpRequest, lastIdPriceCategory);
+            var resultContent = result.Content.ReadAsAsync<PriceCategoryDTO>();
 
-            var result = controller.Post(httpRequest, mapper.Map<PriceCategoryDTO, PriceCategoryModel>(priceCategoryModel)).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
+            Assert.AreEqual(priceCategoryDTOTest, resultContent.Result);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
 
         }
         [TestMethod]
-        public void PriceCategoryDeleteTest()
+        public void PriceCategoryDeleteCorrectTest()
         {
             int id = 1;
             var mock = new Mock<IPriceCategoryService>();
-            mock.Setup(a => a.Delete(id));
+            mock.Setup(a => a.Get(id)).Returns(new PriceCategoryDTO());
 
             PriceCategoryController controller = new PriceCategoryController(mock.Object);
+            var resultCode = controller.Delete(httpRequest, id).StatusCode;
+            var deletedPriceCategory = controller.Get(httpRequest, id).Content.ReadAsAsync<PriceCategoryDTO>();
 
-            var result = controller.Delete(httpRequest, id).StatusCode;
-
-            Assert.AreEqual(HttpStatusCode.OK, result);
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
+            Assert.AreNotEqual(priceCategoryDTOTest, deletedPriceCategory);
 
         }
     

@@ -12,5 +12,17 @@ namespace Hotel.BLL.DTO
         public string RoomNumber { get; set; }
         public CategoryDTO Category { get; set; }
         public bool Active { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is RoomDTO)
+            {
+                var objRM = obj as RoomDTO;
+                return this.RoomNumber == objRM.RoomNumber
+                    && this.Active == objRM.Active
+                    && this.Category == objRM.Category;
+            }
+            else return base.Equals(obj);
+        }
     }
 }

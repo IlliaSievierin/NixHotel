@@ -84,11 +84,21 @@ namespace Hostel.API.Controllers
         }
         public HttpResponseMessage Put(HttpRequestMessage request, int id, [FromBody] RoomModel newRoom)
         {
+            RoomDTO data = service.Get(id);
+            if (data == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound);
+            }
             service.Update(mapperRoomReverse.Map<RoomModel, RoomDTO>(newRoom), id);
             return request.CreateResponse(HttpStatusCode.OK);
         }
         public HttpResponseMessage Delete(HttpRequestMessage request, int id)
         {
+            RoomDTO data = service.Get(id);
+            if (data == null)
+            {
+                return request.CreateResponse(HttpStatusCode.NotFound);
+            }
             service.Delete(id);
             return request.CreateResponse(HttpStatusCode.OK);
         }
