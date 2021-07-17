@@ -74,16 +74,15 @@ namespace Hotel.Tests
         public void CustomerPostCorrectTest()
         {
             var mock = new Mock<ICustomerService>();
-            mock.Setup(a => a.GetAll()).Returns(new List<CustomerDTO>() { customerDTOTest });
-            int lastIdCustomer = mock.Object.GetAll().Count();
+            int lastIdCustomer = 1;
             mock.Setup(a => a.Get(lastIdCustomer)).Returns(customerDTOTest);
 
             CustomerController controller = new CustomerController(mock.Object);
-            var result = controller.Get(httpRequest, lastIdCustomer);
-            var resultContent = result.Content.ReadAsAsync<CustomerDTO>();
+            var resultCode = controller.Post(httpRequest, mapper.Map<CustomerDTO, CustomerModel>(customerDTOTest)).StatusCode;
+            var result = controller.Get(httpRequest, lastIdCustomer).Content.ReadAsAsync<CustomerDTO>();
 
-            Assert.AreEqual(customerDTOTest, resultContent.Result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(customerDTOTest, result.Result);
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
         }
 
         [TestMethod]

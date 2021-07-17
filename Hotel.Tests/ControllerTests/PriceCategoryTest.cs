@@ -33,6 +33,7 @@ namespace Hotel.Tests
               cfg.CreateMap<PriceCategoryDTO, PriceCategoryModel>()
               .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
               ).CreateMapper();
+
             priceCategoryDTOTest = new PriceCategoryDTO()
             {
                 Price = 1000,
@@ -75,16 +76,15 @@ namespace Hotel.Tests
         public void PriceCategoryPostCorrectTest()
         {
             var mock = new Mock<IPriceCategoryService>();
-            mock.Setup(a => a.GetAll()).Returns(new List<PriceCategoryDTO>() { priceCategoryDTOTest });
-            int lastIdPriceCategory = mock.Object.GetAll().Count();
+            int lastIdPriceCategory = 1;
             mock.Setup(a => a.Get(lastIdPriceCategory)).Returns(priceCategoryDTOTest);
 
             PriceCategoryController controller = new PriceCategoryController(mock.Object);
-            var result = controller.Get(httpRequest, lastIdPriceCategory);
-            var resultContent = result.Content.ReadAsAsync<PriceCategoryDTO>();
+            var resultCode = controller.Post(httpRequest, mapper.Map<PriceCategoryDTO, PriceCategoryModel>(priceCategoryDTOTest)).StatusCode;
+            var result = controller.Get(httpRequest, lastIdPriceCategory).Content.ReadAsAsync<PriceCategoryDTO>();
 
-            Assert.AreEqual(priceCategoryDTOTest, resultContent.Result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(priceCategoryDTOTest, result.Result);
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
 
         }
         [TestMethod]

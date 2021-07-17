@@ -19,7 +19,7 @@ namespace Hostel.API.Models
             if(obj is CustomerModel)
             {
                 var objCM = obj as CustomerModel;
-                return //this.Id == objCM.Id
+                return 
                      this.FirstName == objCM.FirstName
                     && this.MiddleName == objCM.MiddleName
                     && this.Passport == objCM.Passport

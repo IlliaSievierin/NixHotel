@@ -87,16 +87,15 @@ namespace Hotel.Tests
         public void ReservationPostCorrectTest()
         {
             var mock = new Mock<IReservationService>();
-            mock.Setup(a => a.GetAll()).Returns(new List<ReservationDTO>() { reservationDTOTest });
-            int lastIdReservation = mock.Object.GetAll().Count();
+            int lastIdReservation = 1;
             mock.Setup(a => a.Get(lastIdReservation)).Returns(reservationDTOTest);
 
             ReservationController controller = new ReservationController(mock.Object);
-            var result = controller.Get(httpRequest, lastIdReservation);
-            var resultContent = result.Content.ReadAsAsync<ReservationDTO>();
+            var resultCode = controller.Post(httpRequest, mapper.Map<ReservationDTO, ReservationModel>(reservationDTOTest)).StatusCode;
+            var result = controller.Get(httpRequest, lastIdReservation).Content.ReadAsAsync<ReservationDTO>();
 
-            Assert.AreEqual(reservationDTOTest, resultContent.Result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(reservationDTOTest, result.Result);
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
         }
         
         [TestMethod]

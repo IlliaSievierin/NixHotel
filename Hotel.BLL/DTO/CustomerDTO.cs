@@ -20,7 +20,7 @@ namespace Hotel.BLL.DTO
             if (obj is CustomerDTO)
             {
                 var objCM = obj as CustomerDTO;
-                return //this.Id == objCM.Id
+                return
                      this.FirstName == objCM.FirstName
                     && this.MiddleName == objCM.MiddleName
                     && this.Passport == objCM.Passport

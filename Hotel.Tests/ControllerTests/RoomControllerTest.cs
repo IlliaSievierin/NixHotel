@@ -26,6 +26,7 @@ namespace Hotel.Tests
         {
             httpRequest = new HttpRequestMessage();
             httpRequest.Properties[HttpPropertyKeys.HttpConfigurationKey] = new HttpConfiguration();
+
             var mapperCategory = new MapperConfiguration(cfg =>
                   cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
 
@@ -77,16 +78,15 @@ namespace Hotel.Tests
         public void RoomPostCorrectTest()
         {
             var mock = new Mock<IRoomService>();
-            mock.Setup(a => a.GetAll()).Returns(new List<RoomDTO>() { roomDTOTest });
-            int lastIdRoom = mock.Object.GetAll().Count();
+            int lastIdRoom = 1;
             mock.Setup(a => a.Get(lastIdRoom)).Returns(roomDTOTest);
 
             RoomController controller = new RoomController(mock.Object);
-            var result = controller.Get(httpRequest, lastIdRoom);
-            var resultContent = result.Content.ReadAsAsync<RoomDTO>();
+            var resultCode = controller.Post(httpRequest, mapper.Map<RoomDTO, RoomModel>(roomDTOTest)).StatusCode;
+            var result = controller.Get(httpRequest, lastIdRoom).Content.ReadAsAsync<RoomDTO>();
 
-            Assert.AreEqual(roomDTOTest, resultContent.Result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(roomDTOTest, result.Result);
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
         }
 
         [TestMethod]

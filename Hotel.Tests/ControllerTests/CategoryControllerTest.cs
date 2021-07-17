@@ -70,17 +70,15 @@ namespace Hotel.Tests
         {
 
             var mock = new Mock<ICategoryService>();
-            mock.Setup(a => a.GetAll()).Returns(new List<CategoryDTO>() { categoryDTOTest });
-            int lastIdCategory = mock.Object.GetAll().Count();
+            int lastIdCategory = 1;
             mock.Setup(a => a.Get(lastIdCategory)).Returns(categoryDTOTest);
 
             CategoryController controller = new CategoryController(mock.Object);
+            var resultCode = controller.Post(httpRequest, mapper.Map<CategoryDTO, CategoryModel>(categoryDTOTest)).StatusCode;
+            var result = controller.Get(httpRequest, lastIdCategory).Content.ReadAsAsync<CategoryDTO>();
 
-            var result = controller.Get(httpRequest, lastIdCategory);
-            var resultContent = result.Content.ReadAsAsync<CategoryDTO>();
-
-            Assert.AreEqual(categoryDTOTest, resultContent.Result);
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(categoryDTOTest, result.Result);
+            Assert.AreEqual(HttpStatusCode.OK, resultCode);
 
         }
         [TestMethod]
