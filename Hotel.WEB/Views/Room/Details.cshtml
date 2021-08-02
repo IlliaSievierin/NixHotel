@@ -1,0 +1,51 @@
+﻿@model Hotel.WEB.Models.RoomModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.LabelFor(model => model.RoomNumber)
+        </th>
+        <td>
+            @Model.RoomNumber
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Category name
+        </th>
+        <td>
+            @ViewBag.Category.CategoryName
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Bed
+        </th>
+        <td>
+            @ViewBag.Category.Bed
+        </td>
+    </tr>
+    <tr>
+        <th>
+            @Html.LabelFor(model => model.Active)
+        </th>
+        <td>
+            @Model.Active
+        </td>
+    </tr>
+    <tr>
+        <th>
+            @Html.Label("Price")
+        </th>
+        <td>
+            @ViewBag.Price
+        </td>
+    </tr>
+</table>
+

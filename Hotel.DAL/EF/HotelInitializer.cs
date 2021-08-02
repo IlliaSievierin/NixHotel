@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Hotel.DAL.EF
 {
-    public class HotelInitializer : DropCreateDatabaseAlways<HotelContext>
+    public class HotelInitializer : CreateDatabaseIfNotExists<HotelContext>
     {
         private void CategotyInitializer(HotelContext context)
         {
@@ -173,7 +173,24 @@ namespace Hotel.DAL.EF
             }
             context.SaveChanges();
         }
-        
+        private void EmployeeInitializer(HotelContext context)
+        {
+            var employeeList = new List<Employee>()
+            {
+                new Employee()
+                {
+                  Id = 1,
+                  Login = "Test",
+                  Password = "Test"
+                }
+            };
+
+            foreach (var employee in employeeList)
+            {
+                context.Employees.Add(employee);
+            }
+            context.SaveChanges();
+        }
         protected override void Seed(HotelContext context)
         {
             CategotyInitializer(context);
@@ -181,6 +198,7 @@ namespace Hotel.DAL.EF
             RoomInitializer(context);
             PriceCategoryInitializer(context);
             ReservationInitializer(context);
+            EmployeeInitializer(context);
         }
     }
 }

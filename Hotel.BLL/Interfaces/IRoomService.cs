@@ -13,8 +13,9 @@ namespace Hotel.BLL.Interfaces
         RoomDTO Get(int id);
         void Create(RoomDTO item);
         void Delete(int id);
-
         void Update(RoomDTO newRoom, int id);
         IEnumerable<RoomDTO> GetFreeRooms(DateTime dateCheck);
+
+        decimal GetPrice(int id);
     }
 }

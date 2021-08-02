@@ -14,6 +14,7 @@ namespace Hotel.DAL.Interfaces
         IRepository<PriceCategory> PriceCategories { get; }
         IRepository<Reservation> Reservations { get; }
         IRepository<Room> Rooms { get; }
+        IRepository<Employee> Employees { get; }
         void Save();
     }
 }

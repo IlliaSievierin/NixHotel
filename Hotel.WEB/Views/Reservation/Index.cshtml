@@ -1,0 +1,123 @@
+﻿
+@{
+    ViewBag.Title = "Reservation";
+}
+
+<h2>Reservation</h2>
+
+<input class="form-control" id="myInput" type="text" placeholder="Search..">
+<table class=" table table-hover">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Customer id
+            </th>
+            <th>
+                Room id
+            </th>
+            <th>
+                Reservation date
+            </th>
+            <th>
+                Arrival date
+            </th>
+            <th>
+                Departure date
+            </th>
+            <th>
+                CheckIn
+            </th>
+
+        </tr>
+    </thead>
+    @foreach (var item in ViewBag.Reservation)
+    {
+        <tbody id="myTable">
+            <tr>
+                <td>
+                    <button type="button" onclick="location.href='@Url.Action("Edit", "Edit", new { id = item.Id })'"><i class="bi bi-pencil"></i></button>
+                    <!-- @Html.ActionLink("Details", "Details", new { id = item.Id })-->
+                </td>
+
+                <td>
+                    @Html.Encode(item.CustomerId)
+                </td>
+                <td>
+                    @Html.Encode(item.RoomId)
+                </td>
+                <td>
+                    @Html.Encode(item.ReservationDate.ToShortDateString())
+                </td>
+                <td>
+                    @Html.Encode(item.ArrivalDate.ToShortDateString())
+                </td>
+                <td>
+                    @Html.Encode(item.DepartureDate.ToShortDateString())
+                </td>
+                <td>
+                    @Html.Encode(item.CheckIn)
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+    Add reservation
+</button>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Add reservation</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="@Url.Action("Add","Reservation")">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="CustomerId">Customer passport</label>
+                            <br>
+                            @Html.DropDownList("CustomerId", ViewBag.CustomersSelectList as SelectList, "Select a customer")
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="RoomId">Room number</label>
+                            <br>
+                            @Html.DropDownList("RoomId", ViewBag.RoomsSelectList as SelectList, "Select a room")
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="Reservation date">Reservation date</label>
+                            <input type="date" class="form-control" name="ReservationDate" placeholder="Reservation date">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Arrival date">Arrival date</label>
+                            <input type="date" class="form-control" name="ArrivalDate" placeholder="Arrival date">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="Departure date">Departure date</label>
+                            <input type="date" class="form-control" name="DepartureDate" placeholder="Departure date">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <br>
+                            <input type="checkbox" name="CheckIn" value="false" />
+                            <label for="CheckIn">Check in</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary col-md-offset-10">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

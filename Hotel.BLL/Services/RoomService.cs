@@ -20,32 +20,14 @@ namespace Hotel.BLL.Services
         public RoomService(IWorkUnit database)
         {
             Database = database;
-            mapperRoom = InitMapper();
-            mapperRoomReverse = InitMapperReverse();
-
-        }
-        private IMapper InitMapper()
-        {
-
-            var mapperCategory = new MapperConfiguration(cfg =>
-               cfg.CreateMap<Category, CategoryDTO>()).CreateMapper();
-
-            return mapperRoom = new MapperConfiguration(cfg =>
+            mapperRoom = new MapperConfiguration(cfg =>
                cfg.CreateMap<Room, RoomDTO>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<Category, CategoryDTO>(s.Category)))
                ).CreateMapper();
-        }
-        private IMapper InitMapperReverse()
-        {
-            var mapperCategoryReverse = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CategoryDTO, Category>()).CreateMapper();
 
-            return mapperRoomReverse = new MapperConfiguration(cfg =>
+            mapperRoomReverse = new MapperConfiguration(cfg =>
                cfg.CreateMap<RoomDTO, Room>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryDTO, Category>(s.Category)))
                ).CreateMapper();
         }
-
         public IEnumerable<RoomDTO> GetAll()
         {
             return mapperRoom.Map<IEnumerable<Room>, List<RoomDTO>>(Database.Rooms.GetAll());
@@ -65,6 +47,16 @@ namespace Hotel.BLL.Services
                 .Where(r => !occupiedRooms.Contains(r.Id));
 
             return mapperRoom.Map<IEnumerable<Room>, List<RoomDTO>>(freeRooms);
+        }
+
+        public decimal GetPrice(int id)
+        {
+            var priceRoom = Database.PriceCategories.GetAll()
+                .Where(pc => pc.CategoryId == id && DateTime.Today >= pc.StartDate && DateTime.Today <= pc.EndDate)
+                .FirstOrDefault();
+            if(priceRoom!=null)
+                return priceRoom.Price;
+            return 0m;
         }
 
         public void Create(RoomDTO item)

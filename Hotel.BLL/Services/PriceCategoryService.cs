@@ -19,30 +19,15 @@ namespace Hotel.BLL.Services
         public PriceCategoryService(IWorkUnit database)
         {
             Database = database;
-            mapperPriceCategory = InitMapper();
-            mapperPriceCategoryReverse = InitMapperReverse();
-        }
-        public IMapper InitMapper()
-        {
-            var mapperCategory = new MapperConfiguration(cfg =>
-              cfg.CreateMap<Category, CategoryDTO>()).CreateMapper();
-
-            return mapperPriceCategory = new MapperConfiguration(cfg =>
+            mapperPriceCategory = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategory, PriceCategoryDTO>()
-              .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<Category, CategoryDTO>(s.Category)))
               ).CreateMapper();
-        }
-        public IMapper InitMapperReverse()
-        {
-            var mapperCategoryReverse = new MapperConfiguration(cfg =>
-             cfg.CreateMap<CategoryDTO, Category>()).CreateMapper();
 
-            return mapperPriceCategoryReverse = new MapperConfiguration(cfg =>
+            mapperPriceCategoryReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryDTO, PriceCategory>()
-              .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryDTO, Category>(s.Category)))
               ).CreateMapper();
         }
-
+      
         public IEnumerable<PriceCategoryDTO> GetAll()
         {
 

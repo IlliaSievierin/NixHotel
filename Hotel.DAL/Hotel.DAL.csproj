@@ -55,6 +55,7 @@
     <Compile Include="EF\HotelInitializer.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Customer.cs" />
+    <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\PriceCategory.cs" />
     <Compile Include="Entities\Reservation.cs" />
     <Compile Include="Entities\Room.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
     <Compile Include="Repositories\EFWorkUnit.cs" />
+    <Compile Include="Repositories\EmployeeRepository.cs" />
     <Compile Include="Repositories\PriceCategoryRepository.cs" />
     <Compile Include="Repositories\ReservationRepository.cs" />
     <Compile Include="Repositories\RoomRepository.cs" />

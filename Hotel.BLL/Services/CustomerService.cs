@@ -9,6 +9,7 @@ using Hotel.BLL.Interfaces;
 using Hotel.DAL.Entities;
 using Hotel.DAL.Interfaces;
 
+
 namespace Hotel.BLL.Services
 {
     public class CustomerService : ICustomerService
@@ -17,6 +18,7 @@ namespace Hotel.BLL.Services
         private IMapper mapperCustomer;
         private IMapper mapperCustomerReverse;
 
+
         public CustomerService(IWorkUnit database)
         {
             Database = database;
@@ -24,7 +26,6 @@ namespace Hotel.BLL.Services
                cfg.CreateMap<Customer, CustomerDTO>()).CreateMapper();
             mapperCustomerReverse = new MapperConfiguration(cfg =>
              cfg.CreateMap<CustomerDTO, Customer>()).CreateMapper();
-
         }
 
         public IEnumerable<CustomerDTO> GetAll()
@@ -51,7 +52,6 @@ namespace Hotel.BLL.Services
                 Database.Customers.Delete(id);
                 Database.Save();
             }
-
         }
     }    
 }

@@ -1,0 +1,31 @@
+﻿@model Hotel.WEB.Models.RegisterModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>Register</h2>
+@Html.ValidationSummary(true)
+<br>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @Html.LabelFor(model => model.Login)
+        @Html.EditorFor(model => model.Login)
+        @Html.ValidationMessageFor(model=> model.Login)
+    </div>
+    <br>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Password)
+        @Html.EditorFor(model => model.Password)
+        @Html.ValidationMessageFor(model => model.Password)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.RepeatPassword)
+        @Html.EditorFor(model => model.RepeatPassword)
+        @Html.ValidationMessageFor(model => model.RepeatPassword)
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-success" value="Register">
+    </div>
+}

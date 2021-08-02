@@ -32,7 +32,7 @@ namespace Hostel.API.Controllers
 
             return mapperRoom = new MapperConfiguration(cfg =>
                 cfg.CreateMap<RoomDTO, RoomModel>()
-                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
+                 //.ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
                 ).CreateMapper();
         }
         private IMapper InitMapperReverse()
@@ -42,7 +42,7 @@ namespace Hostel.API.Controllers
 
             return mapperRoomReverse = new MapperConfiguration(cfg =>
                cfg.CreateMap<RoomModel, RoomDTO>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
+                //.ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
                ).CreateMapper();
         }
         public IEnumerable<RoomModel> Get()

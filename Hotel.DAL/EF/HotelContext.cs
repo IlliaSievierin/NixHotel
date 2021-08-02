@@ -16,13 +16,12 @@ namespace Hotel.DAL.EF
             Database.SetInitializer<HotelContext>(new HotelInitializer());
         }
 
-
-
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<PriceCategory> PriceCategories { get; set; }
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
 
     }
 }

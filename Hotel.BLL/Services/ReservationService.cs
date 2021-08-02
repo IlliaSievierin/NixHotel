@@ -19,48 +19,15 @@ namespace Hotel.BLL.Services
         public ReservationService(IWorkUnit database)
         {
             Database = database;
-            mapperReservation = InitMapper();
-            mapperReservationReverse = InitMapperReverse();
-        }
-        private IMapper InitMapper()
-        {
-            var mapperCustomer = new MapperConfiguration(cfg =>
-            cfg.CreateMap<Customer, CustomerDTO>()).CreateMapper();
-
-            var mapperCategory = new MapperConfiguration(cfg =>
-               cfg.CreateMap<Category, CategoryDTO>()).CreateMapper();
-
-            var mapperRoom = new MapperConfiguration(cfg =>
-               cfg.CreateMap<Room, RoomDTO>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<Category, CategoryDTO>(s.Category)))
-               ).CreateMapper();
-
-            return mapperReservation = new MapperConfiguration(cfg =>
+            mapperReservation = new MapperConfiguration(cfg =>
               cfg.CreateMap<Reservation, ReservationDTO>()
-              .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomer.Map<Customer, CustomerDTO>(s.Customer)))
-              .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoom.Map<Room, RoomDTO>(s.Room)))
               ).CreateMapper();
-        }
-        private IMapper InitMapperReverse()
-        {
-            var mapperCustomerReverse = new MapperConfiguration(cfg =>
-            cfg.CreateMap<CustomerDTO, Customer>()).CreateMapper();
 
-            var mapperCategoryReverse = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CategoryDTO, Category>()).CreateMapper();
-
-            var mapperRoomReverse = new MapperConfiguration(cfg =>
-               cfg.CreateMap<RoomDTO, Room>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryDTO, Category>(s.Category)))
-               ).CreateMapper();
-
-            return mapperReservationReverse = new MapperConfiguration(cfg =>
+            mapperReservationReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<ReservationDTO, Reservation>()
-              .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomerReverse.Map<CustomerDTO, Customer>(s.Customer)))
-              .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoomReverse.Map<RoomDTO, Room>(s.Room)))
               ).CreateMapper();
         }
-
+       
         public IEnumerable<ReservationDTO> GetAll()
         {
             return mapperReservation.Map<IEnumerable<Reservation>, List<ReservationDTO>>(Database.Reservations.GetAll());

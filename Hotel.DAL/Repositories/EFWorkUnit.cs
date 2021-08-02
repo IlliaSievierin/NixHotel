@@ -17,6 +17,7 @@ namespace Hotel.DAL.Repositories
         private PriceCategoryRepository priceCategoryRepository;
         private ReservationRepository reservationRepository;
         private RoomRepository roomRepository;
+        private EmployeeRepository employeeRepository;
 
         public EFWorkUnit(string connectionString)
         {
@@ -76,6 +77,17 @@ namespace Hotel.DAL.Repositories
                     roomRepository = new RoomRepository(db);
                 }
                 return roomRepository;
+            }
+        }
+        public IRepository<Employee> Employees
+        {
+            get
+            {
+                if (employeeRepository == null)
+                {
+                    employeeRepository = new EmployeeRepository(db);
+                }
+                return employeeRepository;
             }
         }
 
