@@ -1,4 +1,5 @@
-﻿
+﻿@using System.Linq
+@using Hotel.WEB.Models
 @{
     ViewBag.Title = "Price";
 }
@@ -9,8 +10,9 @@
 <table class=" table table-hover">
     <thead>
         <tr>
+            <th></th>
             <th>
-                Category id
+                Category
             </th>
             <th>
                 Price
@@ -28,16 +30,20 @@
         <tbody id="myTable">
             <tr>
                 <td>
-                    @Html.Encode(item.CategoryId)
+                    @Html.ActionLink(" ", "Delete", new { id = item.Id }, new { onclick = $"return confirm('Are you sure you wish to delete this price category (id:{item.CategoryId}, date: {item.StartDate.ToShortDateString()} / {item.EndDate.ToShortDateString()}) ?');", @class = "bi bi-trash" })
+                </td>
+                <td>
+                    @{var category = (ViewBag.Categories as IEnumerable<CategoryModel>).Where(c => c.Id == item.CategoryId).FirstOrDefault();
+                        @Html.Encode(category.CategoryName)}
                 </td>
                 <td>
                     @Html.Encode(item.Price)
                 </td>
                 <td>
-                    @Html.Encode(item.StartDate)
+                    @Html.Encode(item.StartDate.ToShortDateString())
                 </td>
                 <td>
-                    @Html.Encode(item.EndDate)
+                    @Html.Encode(item.EndDate.ToShortDateString())
                 </td>
             </tr>
         </tbody>
@@ -68,17 +74,17 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="Price">Price</label>
-                            <input type="text" class="form-control" name="Price" placeholder="Price">
+                            <input type="text" class="form-control" name="Price" placeholder="Price" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="StartDate">Start date</label>
-                            <input type="date" class="form-control" name="StartDate" placeholder="start day">
+                            <input type="date" class="form-control" name="StartDate" placeholder="start day" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="EndDate">End date</label>
-                            <input type="date" class="form-control" name="EndDate" placeholder="End date">
+                            <input type="date" class="form-control" name="EndDate" placeholder="End date" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary col-md-offset-10">Save</button>

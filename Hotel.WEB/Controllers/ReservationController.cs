@@ -53,8 +53,10 @@ namespace Hotel.WEB.Controllers
             var customers = mapperCustomer.Map<IEnumerable<CustomerDTO>, IEnumerable<CustomerModel>>(serviceCustomer.GetAll());
             var rooms = mapperRoom.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(serviceRoom.GetAll());
             ViewBag.Reservation = reservations;
+            ViewBag.Customers = customers;
+            ViewBag.Rooms = rooms;
             ViewBag.CustomersSelectList = new SelectList(customers.ToList(), "Id", "Passport");
-            ViewBag.RoomsSelectList = new SelectList(rooms.ToList(), "Id", "RoomNumber"); ;
+            ViewBag.RoomsSelectList = new SelectList(rooms.ToList().Where(r=>r.Active).OrderBy(r=>r.RoomNumber), "Id", "RoomNumber"); 
 
             return View();
         }
@@ -62,9 +64,52 @@ namespace Hotel.WEB.Controllers
         [HttpPost]
         public RedirectResult Add(ReservationModel reservation)
         {
-            serviceReservation.Create(mapperReservationReverse.Map<ReservationModel, ReservationDTO>(reservation));
-            logger.Info($"{User.Identity.Name} added reservation сustomer id - {reservation.CustomerId}, room id - {reservation.RoomId}, arrival date- {reservation.ArrivalDate}, departure date - {reservation.DepartureDate}.");
+            if (serviceRoom.CheckRoomAvailability(reservation.ArrivalDate, reservation.DepartureDate, reservation.RoomId))
+            {
+                serviceReservation.Create(mapperReservationReverse.Map<ReservationModel, ReservationDTO>(reservation));
+                logger.Info($"{User.Identity.Name} added reservation: сustomer id - {reservation.CustomerId}, room id - {reservation.RoomId}, arrival date- {reservation.ArrivalDate}, departure date - {reservation.DepartureDate}.");
+                return Redirect("/Reservation/Index");
+            }
+            else
+            {
+                return Redirect("/Reservation/RoomBusy");
+            }
+        }
+        [Authorize]
+        [HttpGet]
+        public RedirectResult Delete(int id)
+        {
+            ReservationModel reservation = mapperReservation.Map<ReservationDTO, ReservationModel>(serviceReservation.Get(id));
+            serviceReservation.Delete(id);
+            logger.Info($"{User.Identity.Name} deleted reservation: сustomer id - {reservation.CustomerId}, room id - {reservation.RoomId}, arrival date- {reservation.ArrivalDate}, departure date - {reservation.DepartureDate}.");
             return Redirect("/Reservation/Index");
         }
+
+        [Authorize]
+        [HttpGet]
+        public RedirectResult Edit(int id)
+        {
+            ReservationModel reservation = mapperReservation.Map<ReservationDTO, ReservationModel>(serviceReservation.Get(id));
+            reservation.CheckIn = true;
+            serviceReservation.Update(mapperReservationReverse.Map <ReservationModel,ReservationDTO>(reservation), id);
+            logger.Info($"{User.Identity.Name} update status reservation (now {reservation.CheckIn}.");
+            return Redirect("/Reservation/Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult ProfitForMonth(DateTime dateCheck)
+        {
+            var profitForSelectedMonth = serviceReservation.GetProfitForMonth(dateCheck);
+            ViewBag.Profit = profitForSelectedMonth;
+            ViewBag.CheckDate = dateCheck;
+            return View();
+        }
+
+        private ActionResult RoomBusy()
+        {
+            return View();
+        }
+
     }
 }

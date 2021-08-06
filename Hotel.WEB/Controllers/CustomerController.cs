@@ -31,7 +31,7 @@ namespace Hotel.WEB.Controllers
         public ActionResult Index()
         {
             var data = mapperCustomer.Map<IEnumerable<CustomerDTO>, IEnumerable<CustomerModel>>(service.GetAll());
-            ViewBag.Customers = data;
+            ViewBag.Customers = data.OrderBy(d=>d.FirstName);
             return View();
         }
         [Authorize]
@@ -39,7 +39,7 @@ namespace Hotel.WEB.Controllers
         public RedirectResult Add(CustomerModel customer)
         {
             service.Create(mapperCustomerReverse.Map<CustomerModel, CustomerDTO>(customer));
-            logger.Info($"{User.Identity.Name} added customer {customer.FirstName} {customer.LastName} {customer.MiddleName}.");
+            logger.Info($"{User.Identity.Name} added customer: {customer.FirstName} {customer.LastName} {customer.MiddleName}.");
             return Redirect("/Customer/Index");
         }
         [Authorize]
@@ -48,7 +48,7 @@ namespace Hotel.WEB.Controllers
         {
             CustomerModel customer = mapperCustomer.Map<CustomerDTO, CustomerModel>(service.Get(id));
             service.Delete(id);
-            logger.Info($"{User.Identity.Name} deleted customer {customer.FirstName} {customer.LastName} {customer.MiddleName}.");
+            logger.Info($"{User.Identity.Name} deleted customer: {customer.FirstName} {customer.LastName} {customer.MiddleName}.");
             return Redirect("/Customer/Index");
         }
     }

@@ -27,11 +27,8 @@ namespace Hotel.Tests
             httpRequest = new HttpRequestMessage();
             httpRequest.Properties[HttpPropertyKeys.HttpConfigurationKey] = new HttpConfiguration();
 
-            var mapperCategory = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
              mapper = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryDTO, PriceCategoryModel>()
-              .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
               ).CreateMapper();
 
             priceCategoryDTOTest = new PriceCategoryDTO()

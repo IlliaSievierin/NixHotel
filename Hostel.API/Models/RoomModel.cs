@@ -9,17 +9,20 @@ namespace Hostel.API.Models
     {
         public int Id { get; set; }
         public string RoomNumber { get; set; }
-        public CategoryModel Category { get; set; }
+
+        public int CategoryId { get; set; }
+
         public bool Active { get; set; }
+
 
         public override bool Equals(object obj)
         {
-            if(obj is RoomModel)
+            if (obj is RoomModel)
             {
                 var objRM = obj as RoomModel;
                 return this.RoomNumber == objRM.RoomNumber
                     && this.Active == objRM.Active
-                    && this.Category == objRM.Category;
+                    && this.CategoryId == objRM.CategoryId;
             }
             else return base.Equals(obj);
         }

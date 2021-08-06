@@ -38,7 +38,7 @@ namespace Hotel.WEB.Controllers
                 if (employee != null && Crypto.Hash(model.Password) == employee.Password)
                 {
                     FormsAuthentication.SetAuthCookie(model.Login, true);
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index","Customer");
                 }
                 else
                 {
@@ -77,7 +77,7 @@ namespace Hotel.WEB.Controllers
                     }
                }
                 
-            return View();
+            return View(model);
         }
     }
 }

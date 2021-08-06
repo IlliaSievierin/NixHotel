@@ -8,22 +8,15 @@ namespace Hostel.API.Models
     public class ReservationModel
     {
         public int Id { get; set; }
-
-        public CustomerModel Customer { get; set; }
-
-        public RoomModel Room { get; set; }
-
+        public int CustomerId { get; set; }
+        public int RoomId { get; set; }
         public DateTime ReservationDate { get; set; }
-
         public DateTime ArrivalDate { get; set; }
-
         public DateTime DepartureDate { get; set; }
-
         public bool CheckIn { get; set; }
-
         public override bool Equals(object obj)
         {
-            if(obj is ReservationModel)
+            if (obj is ReservationModel)
             {
                 var objRM = obj as ReservationModel;
 
@@ -31,8 +24,8 @@ namespace Hostel.API.Models
                     && this.ArrivalDate == objRM.ArrivalDate
                     && this.DepartureDate == objRM.DepartureDate
                     && this.CheckIn == objRM.CheckIn
-                    && this.Customer == objRM.Customer
-                    && this.Room == objRM.Room;
+                    && this.CustomerId == objRM.CustomerId
+                    && this.RoomId == objRM.RoomId;
             }
             else return base.Equals(obj);
         }

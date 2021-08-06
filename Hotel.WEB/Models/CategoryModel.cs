@@ -8,6 +8,7 @@ namespace Hotel.WEB.Models
     public class CategoryModel
     {
         public int Id { get; set; }
+        
         public string CategoryName { get; set; }
         public int Bed { get; set; }
         public override bool Equals(object obj)

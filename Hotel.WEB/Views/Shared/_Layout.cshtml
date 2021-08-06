@@ -19,15 +19,54 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink((User.Identity.IsAuthenticated ? User.Identity.Name : "Guest"), "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <div class="avatar">
+                <i class="bi bi-person-circle"></i>
+                @Html.ActionLink((User.Identity.IsAuthenticated ? User.Identity.Name : "Guest"), "Index", "Customer", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li>@Html.ActionLink("Customers", "Index", "Customer")</li>
-                    <li>@Html.ActionLink("Reservations", "Index", "Reservation")</li>
-                    <li>@Html.ActionLink("Rooms", "Index", "Room")</li>
-                    <li>@Html.ActionLink("Categories", "Index", "Category")</li>
-                    <li>@Html.ActionLink("Price", "Index", "PriceCategory")</li>
+                    
+                    <li>
+                        <button onclick="location.href='@Url.Action("Index", "Customer")'" class="nav-button">
+                        <div class="center-top">
+                            <i class="bi bi-person-badge"></i><br>
+                            <span class="nav-name-header">Customers</span>
+                        </div>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="location.href='@Url.Action("Index", "Reservation")'" class="nav-button">
+                            <div class="center-top">
+                                <i class="bi bi-journal-text"></i><br>
+                                <span class="nav-name-header">Reservations</span>
+                            </div>
+                        </button>
+                    </li>
+                    <li>
+                        <button onclick="location.href='@Url.Action("Index", "Room")'" class="nav-button">
+                            <div class="center-top">
+                                <i class="bi bi-door-open"></i><br>
+                                <span class="nav-name-header">Rooms</span>
+                            </div>
+                        </button>
+                    </li>
+                    <li>
+                        <button  onclick="location.href='@Url.Action("Index", "Category")'" class="nav-button">
+                            <div class="center-top">
+                                <i class="bi bi-bookmark-star"></i><br>
+                                <span class="nav-name-header">Categories</span>
+                            </div>
+                        </button>
+                    </li>
+                    <li>
+                        <button  onclick="location.href='@Url.Action("Index", "PriceCategory")'" class="nav-button">
+                            <div class="center-top">
+                                <i class="bi bi-currency-dollar"></i><br>
+                                <span class="nav-name-header">Price</span>
+                            </div>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -43,7 +82,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-    <script>
+<script>
     $(document).ready(function () {
         $("#myInput").on("keyup", function () {
             var value = $(this).val().toLowerCase();
@@ -52,6 +91,6 @@
             });
         });
     });
-    </script>
+</script>
 </body>
 </html>

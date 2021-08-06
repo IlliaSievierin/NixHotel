@@ -45,6 +45,7 @@ namespace Hotel.WEB.Controllers
         {
             var priceCategories = mapperPriceCategory.Map<IEnumerable<PriceCategoryDTO>, IEnumerable<PriceCategoryModel>>(servicePriceCategory.GetAll());
             var categories = mapperCategory.Map<IEnumerable<CategoryDTO>, IEnumerable<CategoryModel>>(serviceCategory.GetAll());
+            ViewBag.Categories = categories;
             ViewBag.CategoriesSelectList = new SelectList(categories.ToList(), "Id", "CategoryName");
             ViewBag.PriceCategories = priceCategories;
             return View();
@@ -58,5 +59,14 @@ namespace Hotel.WEB.Controllers
             return Redirect("/PriceCategory/Index");
         }
 
+        [Authorize]
+        [HttpGet]
+        public RedirectResult Delete(int id)
+        {
+            PriceCategoryModel priceCategory = mapperPriceCategory.Map<PriceCategoryDTO, PriceCategoryModel>(servicePriceCategory.Get(id));
+            servicePriceCategory.Delete(id);
+            logger.Info($"{User.Identity.Name} deleted price category: category id - {priceCategory.CategoryId}, price - {priceCategory.Price}, date-{priceCategory.StartDate}/{priceCategory.EndDate}");
+            return Redirect("/PriceCategory/Index");
+        }
     }
 }

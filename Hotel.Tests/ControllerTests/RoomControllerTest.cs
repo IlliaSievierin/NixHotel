@@ -27,12 +27,9 @@ namespace Hotel.Tests
             httpRequest = new HttpRequestMessage();
             httpRequest.Properties[HttpPropertyKeys.HttpConfigurationKey] = new HttpConfiguration();
 
-            var mapperCategory = new MapperConfiguration(cfg =>
-                  cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
 
             mapper = new MapperConfiguration(cfg =>
                 cfg.CreateMap<RoomDTO, RoomModel>()
-                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
                 ).CreateMapper();
 
             roomDTOTest = new RoomDTO()
@@ -123,14 +120,15 @@ namespace Hotel.Tests
         [TestMethod]
         public void RoomGetFreeRoomsCorrectTest()
         {
-            var testDate = new DateTime(2021, 1, 1);
+            var testStartDate = new DateTime(2021, 1, 1);
+            var testEndDate = new DateTime(2021, 1, 2);
             var mock = new Mock<IRoomService>();
-            mock.Setup(a => a.GetFreeRooms(testDate)).Returns(new List<RoomDTO>() { roomDTOTest});
+            mock.Setup(a => a.GetFreeRooms(testStartDate, testEndDate)).Returns(new List<RoomDTO>() { roomDTOTest});
 
-            var expected = mapper.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(mock.Object.GetFreeRooms(testDate));
+            var expected = mapper.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(mock.Object.GetFreeRooms(testStartDate, testEndDate));
 
             RoomController controller = new RoomController(mock.Object);
-            var result = controller.GetFreeRooms(httpRequest,testDate);
+            var result = controller.GetFreeRooms(httpRequest, testStartDate, testEndDate);
             var resultContent = result.Content.ReadAsAsync<List<RoomDTO>>();
 
             Assert.AreEqual(expected.Count(), resultContent.Result.Count());

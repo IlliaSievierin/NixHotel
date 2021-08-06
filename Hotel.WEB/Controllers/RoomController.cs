@@ -15,9 +15,11 @@ namespace Hotel.WEB.Controllers
     {
         private IRoomService serviceRoom;
         private ICategoryService serviceCategory;
+
         private IMapper mapperRoom;
         private IMapper mapperCategory;
         private IMapper mapperRoomReverse;
+
         private ILogger logger;
 
         public RoomController(IRoomService serviceRoom, ICategoryService serviceCaregory)
@@ -40,16 +42,26 @@ namespace Hotel.WEB.Controllers
             logger = LogManager.GetCurrentClassLogger();
 
         }
+
         [Authorize]
         public ActionResult Index()
         {
             var rooms = mapperRoom.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(serviceRoom.GetAll());
             var categories = mapperCategory.Map<IEnumerable<CategoryDTO>, IEnumerable<CategoryModel>>(serviceCategory.GetAll());
-            ViewBag.Rooms = rooms;
+            ViewBag.Rooms = rooms.OrderBy(r => r.RoomNumber);
             ViewBag.CategoriesSelectList = new SelectList(categories.ToList(), "Id", "CategoryName");
                 
             return View();
         }
+        [Authorize]
+        public ActionResult FreeRooms(DateTime dateStartCheck, DateTime dateEndCheck)
+        {
+            var rooms = mapperRoom.Map<IEnumerable<RoomDTO>, IEnumerable<RoomModel>>(serviceRoom.GetFreeRooms(dateStartCheck, dateEndCheck));
+            ViewBag.DateStartCheck = dateStartCheck;
+            ViewBag.DateEndCheck = dateEndCheck;
+            return View(rooms.OrderBy(r=>r.RoomNumber));
+        }
+
         [Authorize]
         [HttpGet]
         public ActionResult Details(int id)
@@ -67,9 +79,9 @@ namespace Hotel.WEB.Controllers
                 ViewBag.Price = price;
             }
 
-
             return View(room);
         }
+
         [Authorize]
         [HttpPost]
         public ActionResult Add(RoomModel room)
@@ -79,5 +91,25 @@ namespace Hotel.WEB.Controllers
             return Redirect("/Room/Index");
         }
 
+        [Authorize]
+        [HttpGet]
+        public RedirectResult Delete(int id)
+        {
+            RoomModel room = mapperRoom.Map<RoomDTO, RoomModel>(serviceRoom.Get(id));
+            serviceRoom.Delete(id);
+            logger.Info($"{User.Identity.Name} deleted room: {room.RoomNumber}.");
+            return Redirect("/Room/Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public RedirectResult Edit(int id,bool newActive)
+        {
+            RoomModel room = mapperRoom.Map<RoomDTO, RoomModel>(serviceRoom.Get(id));
+            room.Active = newActive;
+            serviceRoom.Update(mapperRoomReverse.Map<RoomModel, RoomDTO>(room), id);
+            logger.Info($"{User.Identity.Name} update status room (now {room.Active}.");
+            return Redirect("/Room/Index");
+        }
     }
 }

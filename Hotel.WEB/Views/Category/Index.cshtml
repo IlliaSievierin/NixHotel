@@ -10,6 +10,9 @@
     <thead>
         <tr>
             <th>
+
+            </th>
+            <th>
                 Name
             </th>
             <th>
@@ -21,6 +24,9 @@
     {
         <tbody id="myTable">
             <tr>
+                <td>
+                    @Html.ActionLink(" ", "Delete", new { id = item.Id }, new { onclick = $"return confirm('Are you sure you wish to delete this category ({item.CategoryName}) ?');", @class = "bi bi-trash" })
+                </td>
                 <td>
                     @Html.Encode(item.CategoryName)
                 </td>
@@ -51,12 +57,12 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="CategoryName">Name</label>
-                            <input type="text" class="form-control" name="CategoryName" id="inputCategoryName" placeholder="Category name">
+                            <input type="text" class="form-control" name="CategoryName" id="inputCategoryName" placeholder="Category name" required>
                         </div>
 
                         <div class="form-group col-md-6">
                             <label for="Bed">Bed</label>
-                            <input type="text" class="form-control" name="Bed" id="inputBed" placeholder="Bed">
+                            <input type="text" class="form-control" name="Bed" id="inputBed" placeholder="Bed" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary col-md-offset-10">Save</button>

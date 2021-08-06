@@ -1,0 +1,8 @@
+﻿
+@{
+    ViewBag.Title = "Profit For Month";
+}
+
+<h2>Profit for month (@ViewBag.CheckDate.Month | @ViewBag.CheckDate.Year) : @ViewBag.Profit $</h2>
+
+@Html.ActionLink(" Back", "Index", new { }, new { @class = "btn bi bi-arrow-left-square" })

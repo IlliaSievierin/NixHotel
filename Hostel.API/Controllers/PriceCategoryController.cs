@@ -22,28 +22,12 @@ namespace Hostel.API.Controllers
         {
             this.service = service;
 
-            mapperPriceCategory = InitMapper();
-            mapperPriceCategoryReverse = InitMapperReverse();
-        }
-        private IMapper InitMapper()
-        {
-           var mapperCategory = new MapperConfiguration(cfg =>
-              cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
-
-
-            return mapperPriceCategory = new MapperConfiguration(cfg =>
+            mapperPriceCategory = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryDTO, PriceCategoryModel>()
-              .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
               ).CreateMapper();
-        }
-        private IMapper InitMapperReverse()
-        {
-            var mapperCategoryReverse = new MapperConfiguration(cfg =>
-              cfg.CreateMap<CategoryModel, CategoryDTO>()).CreateMapper();
 
-            return mapperPriceCategoryReverse = new MapperConfiguration(cfg =>
+            mapperPriceCategoryReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<PriceCategoryModel, PriceCategoryDTO>()
-              .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
               ).CreateMapper();
         }
         public IEnumerable<PriceCategoryModel> Get()

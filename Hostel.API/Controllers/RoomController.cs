@@ -22,27 +22,12 @@ namespace Hostel.API.Controllers
         {
             this.service = service;
 
-            mapperRoom = InitMapper();
-            mapperRoomReverse = InitMapperReverse();
-        }
-        private IMapper InitMapper()
-        {
-            var mapperCategory = new MapperConfiguration(cfg =>
-                  cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
-
-            return mapperRoom = new MapperConfiguration(cfg =>
+            mapperRoom = new MapperConfiguration(cfg =>
                 cfg.CreateMap<RoomDTO, RoomModel>()
-                 //.ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
                 ).CreateMapper();
-        }
-        private IMapper InitMapperReverse()
-        {
-            var mapperCategoryReverse = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CategoryModel, CategoryDTO>()).CreateMapper();
 
-            return mapperRoomReverse = new MapperConfiguration(cfg =>
+            mapperRoomReverse = new MapperConfiguration(cfg =>
                cfg.CreateMap<RoomModel, RoomDTO>()
-                //.ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
                ).CreateMapper();
         }
         public IEnumerable<RoomModel> Get()
@@ -67,10 +52,10 @@ namespace Hostel.API.Controllers
         }
 
         [ResponseType(typeof(List<RoomModel>))]
-        [Route("api/GetFreeRooms/{checkDate}")]
-        public HttpResponseMessage GetFreeRooms(HttpRequestMessage request,[FromUri]DateTime checkDate)
+        [Route("api/GetFreeRooms/")]
+        public HttpResponseMessage GetFreeRooms(HttpRequestMessage request,[FromUri]DateTime checkStartDate, [FromUri] DateTime checkEndDate)
         {
-            var rooms = service.GetFreeRooms(checkDate);
+            var rooms = service.GetFreeRooms(checkStartDate, checkEndDate);
             if (!rooms.Any())
             {
                 return request.CreateResponse(HttpStatusCode.NotFound);

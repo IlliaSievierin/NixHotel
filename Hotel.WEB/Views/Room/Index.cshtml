@@ -4,74 +4,119 @@
 
 <h2>Rooms</h2>
 
-<input class="form-control" id="myInput" type="text" placeholder="Search..">
-<table class=" table table-hover">
-    <thead>
-        <tr>
-            <th></th>
-            <th>
-                Room number
-            </th>
-            <th>
-                Active
-            </th>
-        </tr>
-    </thead>
-    @foreach (var item in ViewBag.Rooms)
-    {
-        <tbody id="myTable">
-            <tr>
-                <td>
-                    <button type="button" onclick="location.href='@Url.Action("Edit", "Edit", new { id = item.Id })'"><i class="bi bi-pencil"></i></button>
-                    <button type="button" onclick="location.href='@Url.Action("Details", "Room", new { id = item.Id })'"><i class="bi bi-card-list"></i></button>
-                </td>
-                <td>
-                    @Html.Encode(item.RoomNumber)
-                </td>
-                <td>
-                    @Html.Encode(item.Active)
-                </td>
-            </tr>
-        </tbody>
-    }
-</table>
 
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-    Add room
-</button>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#mainRoom">Main</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#freeRooms">Check free rooms</a>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="mainRoom">
+        <br>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <table class=" table table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        Room number
+                    </th>
+                    <th>
+                        Active
+                    </th>
+                    <th>
+                        Open/Close
+                    </th>
+                </tr>
+            </thead>
+            @foreach (var item in ViewBag.Rooms)
+            {
+                <tbody id="myTable">
+                    <tr>
+                        <td>
+                            @Html.ActionLink(" ", "Delete", new { id = item.Id }, new { onclick = $"return confirm('Are you sure you wish to delete this room ({item.RoomNumber}) ?');", @class = "btn bi bi-trash" })
+                            @Html.ActionLink(" ", "Details", new { id = item.Id }, new { @class = "btn bi bi-card-list" })
+                        </td>
+                        <td>
+                            @Html.Encode(item.RoomNumber)
+                        </td>
+                        <td>
+                            @Html.Encode(item.Active)
+                        </td>
+                        <td>
+                            @{
+                                if (item.Active)
+                                {
+                                    @Html.ActionLink(" ", "Edit", new { id = item.Id, newActive = !item.Active }, new { onclick = $"return confirm('Are you sure you wish to edit status this room ({item.RoomNumber}) ?');", @class = "bi bi-x-circle" });
+                                }
+                                else
+                                {
+                                    @Html.ActionLink(" ", "Edit", new { id = item.Id, newActive = !item.Active }, new { onclick = $"return confirm('Are you sure you wish to edit status this room ({item.RoomNumber}) ?');", @class = "bi bi-check-lg" });
+                                }
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            }
+        </table>
+
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            Add room
+        </button>
 
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Add room</h4>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="@Url.Action("Add","Room")">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="RoomNumber">Room number</label>
-                            <input type="text" class="form-control" name="RoomNumber" id="inputFirstName" placeholder="Room number">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="CategoryId">Category</label>
-                            <br>
-                            @Html.DropDownList("CategoryId", ViewBag.CategoriesSelectList as SelectList, "Select a category")
-                        </div>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Add room</h4>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-7 ">
-                            <input type="checkbox" name="Active" value="true" />
-                            <label for="Active">Active</label>
-                        </div>
+                    <div class="modal-body">
+                        <form method="post" action="@Url.Action("Add","Room")">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="RoomNumber">Room number</label>
+                                    <input type="text" class="form-control" name="RoomNumber" id="inputFirstName" placeholder="Room number" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="CategoryId">Category</label>
+                                    <br>
+                                    @Html.DropDownList("CategoryId", ViewBag.CategoriesSelectList as SelectList, "Select a category")
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-7 ">
+                                    <input type="checkbox" name="Active" value="true" />
+                                    <label for="Active">Active</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary col-md-offset-10">Save</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary col-md-offset-10">Save</button>
-                </form>
+                </div>
             </div>
         </div>
+    </div>
+    <div class="tab-pane fade" id="freeRooms">
+        <br>
+        <form action="@Url.Action("FreeRooms","Room")">
+            <div class="form-group">
+                <label for="Check start date">Start date</label>
+                <input type="date" class="form-control" name="dateStartCheck" placeholder="Check date" required>
+            </div>
+            <div class="form-group">
+                <label for="Check end date">End date</label>
+                <input type="date" class="form-control" name="dateEndCheck" placeholder="Check date" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Check</button>
+        </form>
+
     </div>
 </div>

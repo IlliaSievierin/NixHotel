@@ -7,12 +7,13 @@
     background-color: #464646;
 }
 .container.body-content{
-    background-color: rgb(255,255,255,0.8);
+    background-color: rgb(255,255,255,0.95);
     height : 100vh;
+    margin-top: 20px;
 }
 
 .navbar.navbar-inverse.navbar-fixed-top {
-    height: 5%;
+    height: 70px;
     background-color: rgb(0,0,0,0.8);
 }
 .modal-body {
@@ -22,3 +23,42 @@
     font-size: 30pt;
     color: white;
 }
+.bi.bi-person-circle {
+    font-size : 36px;
+    color : white;
+}
+.bi.bi-person-badge {
+    font-size: 25px;
+    color: white;
+}
+.bi.bi-journal-text{
+    font-size: 25px;
+    color: white;
+}
+.bi.bi-bookmark-star {
+    font-size: 25px;
+    color: white;
+}
+.bi.bi-currency-dollar {
+    font-size: 25px;
+    color: white;
+}
+.bi.bi-door-open {
+    font-size: 25px;
+    color: white;
+}
+.nav-button {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    color: darkgrey;
+    margin-left: 30px;
+    margin-top:5px;
+}
+.nav-button:hover {
+        color: white;
+}
+.avatar{
+    margin-top:7px;
+}
+

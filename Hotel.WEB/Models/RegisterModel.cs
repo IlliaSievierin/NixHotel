@@ -11,12 +11,13 @@ namespace Hotel.WEB.Models
     {
         [Required]
         public string Login { get; set; }
-        [Required]
-        [RegularExpression(@".{8,}",ErrorMessage ="Password should contain at least 8 symbols")]
+
         [DataType(DataType.Password)]
+        [RegularExpression(@".{8,}", ErrorMessage = "Password should contain at least 8 symbols")]
+        [Required]
         public string Password { get; set; }
-        [Required]
         [DataType(DataType.Password)]
+        [Required]
         [Compare("Password",ErrorMessage ="Passwords didn`t match")]
         public string RepeatPassword { get; set; }
 

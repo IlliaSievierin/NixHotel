@@ -40,7 +40,16 @@ namespace Hotel.WEB.Controllers
         public RedirectResult Add(CategoryModel category)
         {
             service.Create(mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(category));
-            logger.Info($"{User.Identity.Name} added сategory {category.CategoryName}, bed - {category.Bed}.");
+            logger.Info($"{User.Identity.Name} added сategory: {category.CategoryName}, bed - {category.Bed}.");
+            return Redirect("/Category/Index");
+        }
+        [Authorize]
+        [HttpGet]
+        public RedirectResult Delete(int id)
+        {
+            CategoryModel category = mapperCategory.Map<CategoryDTO, CategoryModel>(service.Get(id));
+            service.Delete(id);
+            logger.Info($"{User.Identity.Name} deleted category: {category.CategoryName}.");
             return Redirect("/Category/Index");
         }
     }

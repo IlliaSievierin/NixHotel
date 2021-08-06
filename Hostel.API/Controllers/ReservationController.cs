@@ -21,48 +21,14 @@ namespace Hostel.API.Controllers
         public ReservationController(IReservationService service)
         {
             this.service = service;
-            mapperReservation = InitMapper();
-            mapperReservationReverse = InitMapperReverse();
-        }
-
-        private IMapper InitMapper()
-        {
-            var mapperCustomer = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CustomerDTO, CustomerModel>()).CreateMapper();
-
-            var mapperCategory = new MapperConfiguration(cfg =>
-                cfg.CreateMap<CategoryDTO, CategoryModel>()).CreateMapper();
-
-            var mapperRoom = new MapperConfiguration(cfg =>
-                cfg.CreateMap<RoomDTO, RoomModel>()
-                 .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategory.Map<CategoryDTO, CategoryModel>(s.Category)))
-                ).CreateMapper();
-
-            return mapperReservation = new MapperConfiguration(cfg =>
+            mapperReservation = new MapperConfiguration(cfg =>
               cfg.CreateMap<ReservationDTO, ReservationModel>()
-              .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomer.Map<CustomerDTO, CustomerModel>(s.Customer)))
-              .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoom.Map<RoomDTO, RoomModel>(s.Room)))
               ).CreateMapper();
-        }
-        private IMapper InitMapperReverse()
-        {
-            var mapperCustomerReverse = new MapperConfiguration(cfg =>
-            cfg.CreateMap<CustomerModel, CustomerDTO>()).CreateMapper();
-
-            var mapperCategoryReverse = new MapperConfiguration(cfg =>
-               cfg.CreateMap<CategoryModel, CategoryDTO>()).CreateMapper();
-
-            var mapperRoomReverse = new MapperConfiguration(cfg =>
-               cfg.CreateMap<RoomModel, RoomDTO>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => mapperCategoryReverse.Map<CategoryModel, CategoryDTO>(s.Category)))
-               ).CreateMapper();
-
-            return mapperReservationReverse = new MapperConfiguration(cfg =>
+            mapperReservationReverse = new MapperConfiguration(cfg =>
               cfg.CreateMap<ReservationModel, ReservationDTO>()
-              .ForMember(d => d.Customer, o => o.MapFrom(s => mapperCustomerReverse.Map<CustomerModel, CustomerDTO>(s.Customer)))
-              .ForMember(d => d.Room, o => o.MapFrom(s => mapperRoomReverse.Map<RoomModel, RoomDTO>(s.Room)))
               ).CreateMapper();
         }
+
         public IEnumerable<ReservationModel> Get()
         {
           
@@ -86,7 +52,7 @@ namespace Hostel.API.Controllers
         }
 
 
-        [Route("api/GetProfitForMonth/{date}")]
+        [Route("api/GetProfitForMonth/")]
         public decimal GetProfitForMonth([FromUri] DateTime date)
         {
             var profit = service.GetProfitForMonth(date);

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Hotel.WEB.Models.RoomModel>
+
+<h2>Free rooms for date @ViewBag.DateStartCheck.ToShortDateString() / @ViewBag.DateEndCheck.ToShortDateString()</h2>
+
+<table class=" table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Room number
+            </th>
+            <th>
+                Active
+            </th>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+    {
+        <tbody id="myTable">
+            <tr>
+
+                <td>
+                    @Html.Encode(item.RoomNumber)
+                </td>
+                <td>
+                    @Html.Encode(item.Active)
+                </td>
+
+            </tr>
+        </tbody>
+    }
+</table>
+@Html.ActionLink(" Back", "Index", new { }, new { @class = "btn bi bi-arrow-left-square" })

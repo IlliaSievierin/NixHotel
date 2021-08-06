@@ -37,16 +37,30 @@ namespace Hotel.BLL.Services
         {
             return mapperRoom.Map<Room, RoomDTO>(Database.Rooms.Get(id));
         }
-        public IEnumerable<RoomDTO> GetFreeRooms(DateTime dateCheck)
+        public IEnumerable<RoomDTO> GetFreeRooms(DateTime dateStartCheck, DateTime dateEndCheck)
         {
             var occupiedRooms = Database.Reservations.GetAll()
-                .Where(res=> dateCheck >= res.ArrivalDate && dateCheck <= res.DepartureDate)
+                .Where(res=> (dateStartCheck<=res.ArrivalDate && dateEndCheck>=res.ArrivalDate)||
+                             (dateStartCheck<=res.DepartureDate && dateEndCheck >= res.DepartureDate)||
+                             (dateStartCheck >= res.ArrivalDate && dateEndCheck <= res.DepartureDate))
                 .Select(r=>r.RoomId);
 
             var freeRooms = Database.Rooms.GetAll()
                 .Where(r => !occupiedRooms.Contains(r.Id));
 
             return mapperRoom.Map<IEnumerable<Room>, List<RoomDTO>>(freeRooms);
+        }
+        public bool CheckRoomAvailability(DateTime dateStartCheck, DateTime dateEndCheck,int roomId)
+        {
+            var room = GetFreeRooms(dateStartCheck, dateEndCheck).Where(r=>r.Id == roomId).FirstOrDefault();
+            if (room != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public decimal GetPrice(int id)

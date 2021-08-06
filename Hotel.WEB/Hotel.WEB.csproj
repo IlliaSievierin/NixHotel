@@ -231,6 +231,10 @@
     <Content Include="Views\Employee\Register.cshtml" />
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\PriceCategory\Index.cshtml" />
+    <Content Include="Views\Reservation\Edit.cshtml" />
+    <Content Include="Views\Room\FreeRooms.cshtml" />
+    <Content Include="Views\Reservation\RoomBusy.cshtml" />
+    <Content Include="Views\Reservation\ProfitForMonth.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
