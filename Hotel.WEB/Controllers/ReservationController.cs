@@ -106,7 +106,7 @@ namespace Hotel.WEB.Controllers
             return View();
         }
 
-        private ActionResult RoomBusy()
+        public ActionResult RoomBusy()
         {
             return View();
         }

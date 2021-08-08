@@ -22,6 +22,7 @@ namespace Hotel.DAL.EF
         public virtual DbSet<Reservation> Reservations { get; set; }
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
 
     }
 }
